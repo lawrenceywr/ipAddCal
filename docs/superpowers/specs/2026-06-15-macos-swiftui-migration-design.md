@@ -65,14 +65,17 @@ Responsibilities:
 - Normalize user input text.
 - Convert unsigned 32-bit values between binary, decimal, and hexadecimal.
 - Toggle individual bits in a 32-bit value.
-- Format result rows and clipboard text.
+- Format IP address strings and base conversion values.
 
 Data choices:
 
 - Use `UInt32` for IPv4 addresses and 32-bit base conversion.
-- Use `UInt128` for IPv6 addresses and IPv6 network math.
+- Use `UInt128` for IPv6 addresses and IPv6 network address math.
+- Do not force address counts into `UInt128`. IPv6 `/0` has `2^128` addresses, which is one greater than `UInt128.max`.
+- Represent address counts with either a small domain type such as `AddressCount` or a decimal string formatter that can emit values through `2^128`.
 - Use typed result structs instead of stringly typed dictionaries.
 - Use throwing functions with domain-specific errors that can be mapped to user-facing messages.
+- Keep UI row labels, copy-all text, copy-network text, and history display text out of Core.
 
 ### 2. Feature State and ViewModel Layer
 
@@ -86,6 +89,14 @@ Suggested types:
 - `HistoryStore`: in-memory deduplication and max-eight history behavior.
 - `ResultRow`: label, value, and copy affordance metadata.
 - `CalculationError`: normalized error cases with Chinese user-facing messages.
+
+ViewModel responsibilities:
+
+- Map Core result structs into `ResultRow` values.
+- Decide Chinese labels for each mode.
+- Decide copy-all and copy-network text.
+- Decide history title and subtitle text.
+- Preserve UI semantics outside the Core calculation layer.
 
 ### 3. SwiftUI View Layer
 
@@ -135,6 +146,7 @@ Test coverage should include:
 - All existing `src/ipcalc.test.ts` calculation cases.
 - IPv4 CIDR, numeric prefix, dotted mask, invalid mask, prefix boundaries, and hostmask rejection.
 - IPv6 CIDR, numeric prefix, formatting, and invalid prefix behavior.
+- IPv6 address count formatting for large networks, including `/64` and `/0`.
 - IPv4 to IPv6 `/96` generation.
 - IPv6 to IPv4 reverse calculation and optional prefix validation.
 - Full-width and Chinese punctuation normalization.
@@ -155,7 +167,7 @@ Network modes:
 3. User presses Calculate or hits Return.
 4. ViewModel calls the relevant Core function.
 5. Core returns typed calculation results or throws a typed error.
-6. ViewModel maps results to `ResultRow` values and copy targets.
+6. ViewModel maps results to `ResultRow` values, localized labels, copy text, and history text.
 7. SwiftUI updates result, status, copy buttons, and history.
 
 Base conversion mode:
