@@ -38,3 +38,4 @@ __pycache__/
 # Local agent state
 .omo/
 .sisyphus/
+.worktrees/
