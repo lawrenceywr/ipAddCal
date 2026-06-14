@@ -39,3 +39,11 @@ __pycache__/
 .omo/
 .sisyphus/
 .worktrees/
+
+# Swift and Xcode generated output
+.build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
