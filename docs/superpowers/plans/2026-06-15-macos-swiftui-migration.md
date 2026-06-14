@@ -18,6 +18,8 @@ Create and modify these files:
   - Keep generated Xcode, SwiftPM, and app build artifacts out of Git.
 - Create: `Package.swift`
   - Defines `IPCalculatorCore`, `IPCalculatorFeatures`, and `IPNetworkCalculator` targets plus Swift Testing test targets.
+- Create: `Sources/IPCalculatorCore/CoreTypes.swift`
+  - Defines shared Core enums needed by early scaffold code.
 - Create: `Sources/IPCalculatorCore/InputNormalizer.swift`
   - Full-width and Chinese punctuation normalization.
 - Create: `Sources/IPCalculatorCore/IPAddress.swift`
@@ -111,6 +113,7 @@ Expected: one commit records the current legacy implementation before the Swift 
 **Files:**
 - Modify: `.gitignore`
 - Create: `Package.swift`
+- Create: `Sources/IPCalculatorCore/CoreTypes.swift`
 - Create: `Sources/IPCalculatorCore/IPCalculatorError.swift`
 - Create: `Sources/IPCalculatorFeatures/CalculatorModels.swift`
 - Create: `Sources/IPNetworkCalculator/IPNetworkCalculatorApp.swift`
@@ -165,7 +168,26 @@ let package = Package(
 )
 ```
 
-- [ ] **Step 3: Create initial Core error type**
+- [ ] **Step 3: Create initial Core shared types**
+
+Create `Sources/IPCalculatorCore/CoreTypes.swift` with:
+
+```swift
+import Foundation
+
+public enum IPVersion: Int, Sendable {
+    case v4 = 4
+    case v6 = 6
+}
+
+public enum NumberBase: Sendable {
+    case binary
+    case decimal
+    case hexadecimal
+}
+```
+
+- [ ] **Step 4: Create initial Core error type**
 
 Create `Sources/IPCalculatorCore/IPCalculatorError.swift` with:
 
@@ -247,7 +269,7 @@ public extension IPCalculatorError {
 }
 ```
 
-- [ ] **Step 4: Create placeholder shared model definitions**
+- [ ] **Step 5: Create placeholder shared model definitions**
 
 Create `Sources/IPCalculatorFeatures/CalculatorModels.swift` with:
 
@@ -303,7 +325,7 @@ public struct HistoryEntry: Identifiable, Equatable, Sendable {
 }
 ```
 
-- [ ] **Step 5: Create minimal SwiftUI app entry**
+- [ ] **Step 6: Create minimal SwiftUI app entry**
 
 Create `Sources/IPNetworkCalculator/IPNetworkCalculatorApp.swift` with:
 
@@ -337,7 +359,7 @@ struct ContentView: View {
 }
 ```
 
-- [ ] **Step 6: Create smoke tests**
+- [ ] **Step 7: Create smoke tests**
 
 Create `Tests/IPCalculatorCoreTests/SmokeTests.swift` with:
 
@@ -363,7 +385,7 @@ func featureTargetLoads() {
 }
 ```
 
-- [ ] **Step 7: Run tests**
+- [ ] **Step 8: Run tests**
 
 Run:
 
@@ -373,7 +395,7 @@ swift test
 
 Expected: both smoke tests pass.
 
-- [ ] **Step 8: Commit**
+- [ ] **Step 9: Commit**
 
 Run:
 
@@ -514,12 +536,6 @@ Create `Sources/IPCalculatorCore/BaseConversion.swift` with:
 
 ```swift
 import Foundation
-
-public enum NumberBase: Sendable {
-    case binary
-    case decimal
-    case hexadecimal
-}
 
 public struct BaseConversionResult: Equatable, Sendable {
     public var value: UInt32
