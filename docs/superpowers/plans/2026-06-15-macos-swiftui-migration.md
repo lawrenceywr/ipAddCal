@@ -551,12 +551,13 @@ public enum BaseConverter {
     }
 
     public static func format(_ value: UInt32) -> BaseConversionResult {
+        let binary = String(value, radix: 2)
         BaseConversionResult(
             value: value,
-            binary: String(value, radix: 2),
+            binary: binary,
             decimal: String(value),
             hexadecimal: String(value, radix: 16).uppercased(),
-            binary32: String(String(value, radix: 2).reversed()).padding(toLength: 32, withPad: "0", startingAt: 0).reversedString
+            binary32: String(repeating: "0", count: max(0, 32 - binary.count)) + binary
         )
     }
 
@@ -622,11 +623,6 @@ private extension Character {
     }
 }
 
-private extension String {
-    var reversedString: String {
-        String(reversed())
-    }
-}
 ```
 
 - [ ] **Step 6: Run tests**
