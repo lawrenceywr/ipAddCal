@@ -35,13 +35,21 @@ struct ResultPanelView: View {
                     ForEach(viewModel.resultRows) { row in
                         GridRow {
                             Text(row.label).foregroundStyle(.secondary)
-                            Text(row.value)
-                                .font(.system(.body, design: .monospaced).bold())
-                                .textSelection(.enabled)
-                                .onTapGesture {
+                            Button {
+                                ClipboardService.copy(row.value)
+                                flash("已复制：\(row.label)")
+                            } label: {
+                                Text(row.value)
+                                    .font(.system(.body, design: .monospaced).bold())
+                            }
+                            .buttonStyle(.plain)
+                            .help("复制\(row.label)")
+                            .contextMenu {
+                                Button("复制") {
                                     ClipboardService.copy(row.value)
                                     flash("已复制：\(row.label)")
                                 }
+                            }
                         }
                     }
                 }
