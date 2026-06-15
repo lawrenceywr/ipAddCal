@@ -1,25 +1,10 @@
-# Node.js dependencies and frontend output
-node_modules/
-dist/
-coverage/
-*.log
-npm-debug.log*
-
-# Rust and Tauri generated output
-src-tauri/target/
-src-tauri/gen/
-
-# Packaged application artifacts
-build/
-release/
-*.spec
-*.exe
-*.msi
-*.msix
-*.dmg
-*.AppImage
-*.deb
-*.rpm
+# Swift Package Manager and Xcode generated output
+.build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+*.xcuserstate
 
 # Environment and editor files
 .env
@@ -28,22 +13,8 @@ release/
 .idea/
 .vscode/
 .DS_Store
-Thumbs.db
-
-# Local caches and legacy Python artifacts
-__pycache__/
-.pytest_cache/
-*.py[cod]
 
 # Local agent state
 .omo/
 .sisyphus/
 .worktrees/
-
-# Swift and Xcode generated output
-.build/
-DerivedData/
-*.xcworkspace/xcuserdata/
-*.xcodeproj/xcuserdata/
-*.xcodeproj/project.xcworkspace/xcuserdata/
-*.xcuserstate
