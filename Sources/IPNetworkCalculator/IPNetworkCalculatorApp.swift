@@ -8,5 +8,8 @@ struct IPNetworkCalculatorApp: App {
                 .frame(minWidth: 900, minHeight: 580)
         }
         .windowResizability(.contentMinSize)
+        .commands {
+            CommandGroup(replacing: .newItem) {}
+        }
     }
 }

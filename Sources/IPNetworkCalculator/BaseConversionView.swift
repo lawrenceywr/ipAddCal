@@ -20,7 +20,7 @@ struct BaseConversionView: View {
             }
         }
         .padding()
-        .glassEffect()
+        .calculatorGlassPanel()
     }
 
     private func baseField(_ title: String, text: Binding<String>, base: NumberBase) -> some View {

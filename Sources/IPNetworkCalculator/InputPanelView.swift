@@ -38,7 +38,7 @@ struct InputPanelView: View {
             }
         }
         .padding()
-        .glassEffect()
+        .calculatorGlassPanel()
     }
 
     private func field(_ title: String, example: String, text: Binding<String>) -> some View {

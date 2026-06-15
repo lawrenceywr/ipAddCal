@@ -48,7 +48,7 @@ struct ResultPanelView: View {
             }
         }
         .padding()
-        .glassEffect()
+        .calculatorGlassPanel()
     }
 
     private func flash(_ text: String) {
