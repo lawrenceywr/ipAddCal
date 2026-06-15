@@ -32,7 +32,27 @@ public struct NetworkCalculationResult: Equatable, Sendable {
     }
 }
 
+public struct IPv4ToIPv6Result: Equatable, Sendable {
+    public var ipv4Network: String
+    public var ipv6Prefix: String
+    public var ipv6Network: String
+    public var addressCount: String
+    public var firstAddress: String
+    public var lastAddress: String
+}
+
+public struct IPv6ToIPv4Result: Equatable, Sendable {
+    public var ipv6Prefix: String
+    public var ipv6Network: String
+    public var ipv4Network: String
+    public var addressCount: String
+    public var firstAddress: String
+    public var lastAddress: String
+}
+
 public enum NetworkCalculator {
+    private static let ipv4Size = UInt128(1) << UInt128(32)
+
     public static func calculate(_ text: String) throws -> NetworkCalculationResult {
         try calculate(parseInput([InputNormalizer.normalizeFieldText(text)]))
     }
@@ -124,6 +144,112 @@ public enum NetworkCalculator {
         return groups.reduce(UInt128(0)) { value, group in
             (value << 16) | UInt128(group)
         }
+    }
+
+    public static func parseIPv6_96Prefix(_ prefixText: String) throws -> UInt128 {
+        guard !prefixText.isEmpty else {
+            throw IPCalculatorError.ipv6PrefixRequired
+        }
+
+        if prefixText.contains("/") {
+            let input = try parseInput([InputNormalizer.normalizeFieldText(prefixText)])
+            guard input.address.version == .v6 else {
+                throw IPCalculatorError.invalidIPv6Prefix(prefixText)
+            }
+            guard input.prefixLength == 96 else {
+                throw IPCalculatorError.ipv6PrefixMustBe96
+            }
+            return networkAddress(input.address.value, prefixLength: 96, bitLength: 128)
+        }
+
+        let address: UInt128
+        do {
+            address = try parseIPv6Address(prefixText)
+        } catch {
+            throw IPCalculatorError.invalidIPv6Prefix(prefixText)
+        }
+
+        let prefixNetwork = networkAddress(address, prefixLength: 96, bitLength: 128)
+        guard address == prefixNetwork else {
+            throw IPCalculatorError.ipv6PrefixHasHostBits
+        }
+        return prefixNetwork
+    }
+
+    public static func generateIPv6FromIPv4(
+        _ input: NetworkInput,
+        ipv6PrefixText: String
+    ) throws -> IPv4ToIPv6Result {
+        guard input.address.version == .v4 else {
+            throw IPCalculatorError.ipv4ToIPv6RequiresIPv4
+        }
+
+        let ipv4Network = UInt32(input.address.value) & ipv4Mask(prefixLength: input.prefixLength)
+        let ipv6Prefix = try parseIPv6_96Prefix(InputNormalizer.normalizeFieldText(ipv6PrefixText))
+        let ipv6PrefixLength = 96 + input.prefixLength
+        let ipv6Address = ipv6Prefix | UInt128(ipv4Network)
+        let ipv6Network = networkAddress(ipv6Address, prefixLength: ipv6PrefixLength, bitLength: 128)
+        let hostBits = 128 - ipv6PrefixLength
+        let addressCount = AddressCount.value(UInt128(1) << UInt128(hostBits)).description
+        let lastAddress = ipv6Network + (UInt128(1) << UInt128(hostBits)) - 1
+
+        return IPv4ToIPv6Result(
+            ipv4Network: "\(IPAddressFormatter.ipv4(ipv4Network))/\(input.prefixLength)",
+            ipv6Prefix: "\(IPAddressFormatter.ipv6(ipv6Prefix))/96",
+            ipv6Network: "\(IPAddressFormatter.ipv6(ipv6Network))/\(ipv6PrefixLength)",
+            addressCount: addressCount,
+            firstAddress: IPAddressFormatter.ipv6(ipv6Network),
+            lastAddress: IPAddressFormatter.ipv6(lastAddress)
+        )
+    }
+
+    public static func generateIPv4FromIPv6(
+        _ ipv6Text: String,
+        ipv6PrefixText: String = ""
+    ) throws -> IPv6ToIPv4Result {
+        let normalizedIPv6Text = InputNormalizer.normalizeFieldText(ipv6Text)
+        let input: NetworkInput
+        if normalizedIPv6Text.contains("/") {
+            input = try parseInput([normalizedIPv6Text])
+        } else {
+            input = NetworkInput(
+                address: ParsedIPAddress(version: .v6, value: try parseIPv6Address(normalizedIPv6Text)),
+                prefixLength: 128
+            )
+        }
+
+        guard input.address.version == .v6 else {
+            throw IPCalculatorError.ipv6ToIPv4RequiresIPv6
+        }
+        guard input.prefixLength >= 96 else {
+            throw IPCalculatorError.ipv6ReversePrefixTooShort(input.prefixLength)
+        }
+
+        let ipv6Network = networkAddress(input.address.value, prefixLength: input.prefixLength, bitLength: 128)
+        let ipv6Prefix = networkAddress(ipv6Network, prefixLength: 96, bitLength: 128)
+        let normalizedPrefixText = InputNormalizer.normalizeFieldText(ipv6PrefixText)
+        if !normalizedPrefixText.isEmpty {
+            let expectedPrefix = try parseIPv6_96Prefix(normalizedPrefixText)
+            guard expectedPrefix == ipv6Prefix else {
+                throw IPCalculatorError.ipv6PrefixMismatch
+            }
+        }
+
+        let ipv4PrefixLength = input.prefixLength - 96
+        let ipv4Value = UInt32(ipv6Network & (ipv4Size - 1))
+        let ipv4Network = ipv4Value & ipv4Mask(prefixLength: ipv4PrefixLength)
+        let hostBits = 32 - ipv4PrefixLength
+        let addressCount = AddressCount.value(UInt128(1) << UInt128(hostBits)).description
+        let lastAddress = ipv4Network | ~ipv4Mask(prefixLength: ipv4PrefixLength)
+
+        return IPv6ToIPv4Result(
+            ipv6Prefix: "\(IPAddressFormatter.ipv6(ipv6Prefix))/96",
+            ipv6Network: "\(IPAddressFormatter.ipv6(ipv6Network))/\(input.prefixLength)",
+            ipv4Network: "\(IPAddressFormatter.ipv4(ipv4Network))/\(ipv4PrefixLength)",
+            addressCount: addressCount,
+            firstAddress: IPAddressFormatter.ipv4(ipv4Network),
+            lastAddress: IPAddressFormatter.ipv4(lastAddress)
+        )
     }
 
     private static func parsePrefix(address: ParsedIPAddress, prefixText: String) throws -> Int {
