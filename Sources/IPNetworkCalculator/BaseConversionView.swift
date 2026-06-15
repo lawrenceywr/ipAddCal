@@ -26,11 +26,15 @@ struct BaseConversionView: View {
     private func baseField(_ title: String, text: Binding<String>, base: NumberBase) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title).font(.headline)
-            TextField(title, text: text)
+            TextField(title, text: Binding(
+                get: { text.wrappedValue },
+                set: { newValue in state.update(text: newValue, base: base) }
+            ))
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.roundedBorder)
-                .onChange(of: text.wrappedValue) { _, newValue in
-                    state.update(text: newValue, base: base)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 6)
+                        .stroke(state.invalidBase == base ? Color.red : Color.clear, lineWidth: 1)
                 }
         }
     }

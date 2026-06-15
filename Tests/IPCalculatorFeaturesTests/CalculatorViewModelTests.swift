@@ -64,3 +64,25 @@ func synchronizesBaseConversionState() {
     state.toggle(bitIndex: 31)
     #expect(state.decimalText == "2147483903")
 }
+
+@MainActor
+@Test
+func preservesActiveBaseConversionFieldWhileSyncingOtherBases() {
+    var state = BaseConversionState()
+    state.update(text: "0xFF", base: .hexadecimal)
+
+    #expect(state.hexadecimalText == "0xFF")
+    #expect(state.decimalText == "255")
+    #expect(state.binaryText == "11111111")
+    #expect(state.invalidBase == nil)
+}
+
+@MainActor
+@Test
+func tracksInvalidActiveBaseConversionField() {
+    var state = BaseConversionState()
+    state.update(text: "102", base: .binary)
+
+    #expect(state.invalidBase == .binary)
+    #expect(state.errorMessage == "二进制只能包含 0 和 1")
+}
