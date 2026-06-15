@@ -70,7 +70,7 @@ public enum NetworkCalculator {
 
     public static func parseIPAddress(_ text: String) throws -> ParsedIPAddress {
         if text.contains(":") {
-            throw IPCalculatorError.invalidIPAddress(text)
+            return ParsedIPAddress(version: .v6, value: try parseIPv6Address(text))
         }
 
         return ParsedIPAddress(version: .v4, value: UInt128(try parseIPv4Address(text)))
@@ -97,6 +97,33 @@ public enum NetworkCalculator {
             value = (value << 8) | octet
         }
         return value
+    }
+
+    public static func parseIPv6Address(_ text: String) throws -> UInt128 {
+        guard !text.isEmpty, !text.contains(":::") else {
+            throw IPCalculatorError.invalidIPAddress(text)
+        }
+
+        let parts = text.lowercased().components(separatedBy: "::")
+        guard parts.count <= 2 else {
+            throw IPCalculatorError.invalidIPAddress(text)
+        }
+
+        let head = try parseIPv6Hextets(parts[0])
+        let tail = parts.count == 2 ? try parseIPv6Hextets(parts[1]) : []
+        let missing = 8 - head.count - tail.count
+
+        if parts.count == 1 && missing != 0 {
+            throw IPCalculatorError.invalidIPAddress(text)
+        }
+        if parts.count == 2 && missing < 1 {
+            throw IPCalculatorError.invalidIPAddress(text)
+        }
+
+        let groups = head + Array(repeating: UInt16(0), count: missing) + tail
+        return groups.reduce(UInt128(0)) { value, group in
+            (value << 16) | UInt128(group)
+        }
     }
 
     private static func parsePrefix(address: ParsedIPAddress, prefixText: String) throws -> Int {
@@ -154,7 +181,21 @@ public enum NetworkCalculator {
     }
 
     private static func calculateIPv6(_ address: UInt128, prefixLength: Int) throws -> NetworkCalculationResult {
-        throw IPCalculatorError.invalidIPAddress(IPAddressFormatter.ipv6(address))
+        let network = networkAddress(address, prefixLength: prefixLength, bitLength: 128)
+        let hostBits = 128 - prefixLength
+        let count = hostBits == 128
+            ? AddressCount.powerOfTwo(exponent: 128)
+            : AddressCount.value(UInt128(1) << UInt128(hostBits))
+        let lastAddress = hostBits == 128
+            ? UInt128.max
+            : network + (UInt128(1) << UInt128(hostBits)) - 1
+
+        return NetworkCalculationResult(
+            network: "\(IPAddressFormatter.ipv6(network))/\(prefixLength)",
+            addressCount: count.description,
+            firstAddress: IPAddressFormatter.ipv6(network),
+            lastAddress: IPAddressFormatter.ipv6(lastAddress)
+        )
     }
 
     private static func ipv4Mask(prefixLength: Int) -> UInt32 {
@@ -179,5 +220,32 @@ public enum NetworkCalculator {
         }
 
         return prefixLength
+    }
+
+    private static func parseIPv6Hextets(_ section: String) throws -> [UInt16] {
+        if section.isEmpty { return [] }
+
+        return try section.split(separator: ":", omittingEmptySubsequences: false).map { part in
+            let text = String(part)
+            guard !text.isEmpty,
+                  text.count <= 4,
+                  let value = UInt16(text, radix: 16)
+            else {
+                throw IPCalculatorError.invalidIPv6Hextet
+            }
+            return value
+        }
+    }
+
+    private static func networkAddress(_ address: UInt128, prefixLength: Int, bitLength: Int) -> UInt128 {
+        address & networkMask(prefixLength: prefixLength, bitLength: bitLength)
+    }
+
+    private static func networkMask(prefixLength: Int, bitLength: Int) -> UInt128 {
+        if prefixLength == 0 { return 0 }
+        if prefixLength == bitLength { return UInt128.max }
+
+        let hostBits = bitLength - prefixLength
+        return UInt128.max << UInt128(hostBits)
     }
 }
