@@ -44,3 +44,35 @@ func dedupesTypedHistoryEntriesAndKeepsRestoreTarget() {
     #expect(store.entries.count == 1)
     #expect(store.entries.first?.restoreTarget == .network(input: "192.168.1.10/24"))
 }
+
+@Test
+func preservesDistinctRestoreTargetsWhenCopyTextMatches() {
+    var store = HistoryStore()
+    let sharedCopyText = "2001:db8::30eb:1800/126"
+
+    store.add(
+        entry: HistoryEntry(
+            title: sharedCopyText,
+            subtitle: "V4 -> V6 · 48.235.24.0/30",
+            copyText: sharedCopyText,
+            restoreTarget: .ipv4ToIPv6(
+                ipv4Input: "48.235.24.0/30",
+                ipv6PrefixInput: "2001:db8::"
+            )
+        )
+    )
+    store.add(
+        entry: HistoryEntry(
+            title: sharedCopyText,
+            subtitle: "网段计算 · \(sharedCopyText)",
+            copyText: sharedCopyText,
+            restoreTarget: .network(input: sharedCopyText)
+        )
+    )
+
+    #expect(store.entries.count == 2)
+    #expect(store.entries.map(\.restoreTarget) == [
+        .network(input: sharedCopyText),
+        .ipv4ToIPv6(ipv4Input: "48.235.24.0/30", ipv6PrefixInput: "2001:db8::")
+    ])
+}

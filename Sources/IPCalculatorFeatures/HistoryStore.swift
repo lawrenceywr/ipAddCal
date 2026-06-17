@@ -9,7 +9,9 @@ public struct HistoryStore: Equatable, Sendable {
     public mutating func add(entry: HistoryEntry) {
         guard !entry.copyText.isEmpty else { return }
 
-        entries.removeAll { $0.copyText == entry.copyText }
+        entries.removeAll { existing in
+            existing.copyText == entry.copyText && existing.restoreTarget == entry.restoreTarget
+        }
         entries.insert(entry, at: 0)
         if entries.count > maxEntries {
             entries.removeSubrange(maxEntries..<entries.count)
