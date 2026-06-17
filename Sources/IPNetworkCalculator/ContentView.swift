@@ -2,35 +2,45 @@ import SwiftUI
 import IPCalculatorFeatures
 
 struct ContentView: View {
-    @State private var viewModel = CalculatorViewModel()
+    @State private var workbench = CalculatorWorkbenchViewModel()
 
     var body: some View {
+        @Bindable var workbench = workbench
+
         NavigationSplitView {
-            HistorySidebarView(history: viewModel.history)
-                .navigationTitle("历史记录")
+            SidebarNavigationView(selection: $workbench.navigation.selectedWorkspace)
         } detail: {
-            VStack(alignment: .leading, spacing: 16) {
-                header
-                ModePickerView(mode: $viewModel.mode)
-                if viewModel.mode == .baseConversion {
-                    BaseConversionView(state: $viewModel.baseState)
-                } else {
-                    InputPanelView(viewModel: viewModel)
-                    ResultPanelView(viewModel: viewModel)
+            Group {
+                switch workbench.navigation.selectedWorkspace {
+                case .ipCalculation:
+                    IPWorkspaceView(workbench: workbench)
+                case .baseConversion:
+                    BaseConversionView(viewModel: workbench.baseConversionWorkspace)
                 }
-                Spacer(minLength: 0)
             }
             .padding(24)
-            .navigationTitle("IP 地址计算器")
-        }
-    }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text(workbench.windowTitle)
+                        .font(.headline)
+                }
 
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("IP 地址计算器")
-                .font(.largeTitle.bold())
-            Text("IPv4 / IPv6 网段计算、V4 到 V6、V6 到 V4 与 32 位进制转换")
-                .foregroundStyle(.secondary)
+                ToolbarItem {
+                    Button("历史") {
+                        workbench.navigation.isHistoryPresented.toggle()
+                    }
+                    .popover(isPresented: $workbench.navigation.isHistoryPresented) {
+                        HistoryPopoverView(
+                            entries: workbench.history.entries,
+                            onCopy: { _ in },
+                            onRestore: { entry in
+                                workbench.restore(entry)
+                            }
+                        )
+                    }
+                }
+            }
         }
     }
 }

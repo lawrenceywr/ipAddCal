@@ -15,7 +15,7 @@ struct IPNetworkCalculatorApp: App {
     var body: some Scene {
         WindowGroup("IP 地址计算器") {
             ContentView()
-                .frame(minWidth: 900, minHeight: 580)
+                .frame(minWidth: 980, minHeight: 640)
         }
         .windowResizability(.contentMinSize)
         .commands {

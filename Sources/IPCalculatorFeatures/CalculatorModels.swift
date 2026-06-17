@@ -70,7 +70,8 @@ public enum CalculatorMode: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-public struct ResultSection: Equatable, Sendable {
+public struct ResultSection: Identifiable, Equatable, Sendable {
+    public var id: String { title }
     public var title: String
     public var rows: [ResultRow]
 
