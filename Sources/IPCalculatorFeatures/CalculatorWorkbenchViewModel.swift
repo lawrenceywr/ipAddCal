@@ -16,6 +16,10 @@ public final class CalculatorWorkbenchViewModel {
     }
 
     public func calculateCurrentIPWorkspace() {
+        guard navigation.selectedWorkspace == .ipCalculation else {
+            return
+        }
+
         let entry: HistoryEntry?
         switch navigation.selectedIPMode {
         case .network:

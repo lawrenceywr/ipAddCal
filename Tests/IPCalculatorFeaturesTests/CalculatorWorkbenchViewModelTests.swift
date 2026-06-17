@@ -12,7 +12,8 @@ func workbenchWritesHistoryOnlyForManualIpCalculations() {
     #expect(workbench.history.entries.count == 1)
 
     workbench.navigation.selectedWorkspace = .baseConversion
-    workbench.baseConversionWorkspace.update(text: "255", base: .decimal)
+    workbench.networkWorkspace.networkInput = "10.0.0.1/24"
+    workbench.calculateCurrentIPWorkspace()
     #expect(workbench.history.entries.count == 1)
 }
 
@@ -31,6 +32,7 @@ func workbenchRestoresTranslationHistoryIntoTheCorrectWorkspace() {
 
     #expect(workbench.navigation.selectedWorkspace == .ipCalculation)
     #expect(workbench.navigation.selectedIPMode == .translation)
+    #expect(workbench.navigation.isHistoryPresented == false)
     #expect(workbench.translationWorkspace.direction == .ipv4ToIPv6)
     #expect(workbench.translationWorkspace.ipv4Input == "48.235.24.0/30")
     #expect(workbench.translationWorkspace.ipv6PrefixInput == "2001:db8::")
