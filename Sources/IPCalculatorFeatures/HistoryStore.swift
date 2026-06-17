@@ -6,13 +6,17 @@ public struct HistoryStore: Equatable, Sendable {
 
     public init() {}
 
-    public mutating func add(title: String, subtitle: String, copyText: String) {
-        guard !copyText.isEmpty else { return }
+    public mutating func add(entry: HistoryEntry) {
+        guard !entry.copyText.isEmpty else { return }
 
-        entries.removeAll { $0.copyText == copyText }
-        entries.insert(HistoryEntry(title: title, subtitle: subtitle, copyText: copyText), at: 0)
+        entries.removeAll { $0.copyText == entry.copyText }
+        entries.insert(entry, at: 0)
         if entries.count > maxEntries {
             entries.removeSubrange(maxEntries..<entries.count)
         }
+    }
+
+    public mutating func add(title: String, subtitle: String, copyText: String) {
+        add(entry: HistoryEntry(title: title, subtitle: subtitle, copyText: copyText))
     }
 }
