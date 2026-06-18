@@ -46,7 +46,7 @@ func dedupesTypedHistoryEntriesAndKeepsRestoreTarget() {
 }
 
 @Test
-func preservesDistinctRestoreTargetsWhenCopyTextMatches() {
+func dedupesMatchingCopyTextAndKeepsNewestRestoreTarget() {
     var store = HistoryStore()
     let sharedCopyText = "2001:db8::30eb:1800/126"
 
@@ -70,9 +70,7 @@ func preservesDistinctRestoreTargetsWhenCopyTextMatches() {
         )
     )
 
-    #expect(store.entries.count == 2)
-    #expect(store.entries.map(\.restoreTarget) == [
-        .network(input: sharedCopyText),
-        .ipv4ToIPv6(ipv4Input: "48.235.24.0/30", ipv6PrefixInput: "2001:db8::")
-    ])
+    #expect(store.entries.count == 1)
+    #expect(store.entries.first?.subtitle == "网段计算 · \(sharedCopyText)")
+    #expect(store.entries.first?.restoreTarget == .network(input: sharedCopyText))
 }

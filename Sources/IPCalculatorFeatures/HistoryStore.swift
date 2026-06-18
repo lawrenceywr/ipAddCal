@@ -10,7 +10,7 @@ public struct HistoryStore: Equatable, Sendable {
         guard !entry.copyText.isEmpty else { return }
 
         entries.removeAll { existing in
-            existing.copyText == entry.copyText && existing.restoreTarget == entry.restoreTarget
+            existing.copyText == entry.copyText
         }
         entries.insert(entry, at: 0)
         if entries.count > maxEntries {
