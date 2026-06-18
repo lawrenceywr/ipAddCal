@@ -61,6 +61,7 @@ public final class NetworkWorkspaceViewModel {
     private func buildSections(_ result: NetworkCalculationResult) -> [ResultSection] {
         var sections = [
             ResultSection(
+                id: "network.core",
                 title: "核心结果",
                 rows: [
                     ResultRow(label: "网段", value: result.network, isPrimaryCopyTarget: true),
@@ -74,6 +75,7 @@ public final class NetworkWorkspaceViewModel {
         if let classCCount = result.classCCount {
             sections.append(
                 ResultSection(
+                    id: "network.extended",
                     title: "扩展结果",
                     rows: [ResultRow(label: "C段数量", value: classCCount)]
                 )

@@ -3,7 +3,6 @@ import IPCalculatorFeatures
 
 struct HistoryPopoverView: View {
     let entries: [HistoryEntry]
-    let onCopy: (HistoryEntry) -> Void
     let onRestore: (HistoryEntry) -> Void
 
     @State private var copiedEntryID: HistoryEntry.ID?
@@ -54,13 +53,12 @@ struct HistoryPopoverView: View {
         }
         .padding(16)
         .frame(width: 360, alignment: .leading)
-        .calculatorGlassPanel()
+        .calculatorPopoverSurface()
     }
 
     private func copy(_ entry: HistoryEntry) {
         ClipboardService.copy(entry.copyText)
         copiedEntryID = entry.id
-        onCopy(entry)
 
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(1.2))

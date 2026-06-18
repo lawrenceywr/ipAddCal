@@ -39,7 +39,13 @@ func translationWorkspaceBuildsIpv6ToIpv4ResultAndHistoryEntry() {
 @Test
 func translationWorkspaceRestoreSupportsIpv4ToIpv6Direction() {
     let viewModel = TranslationWorkspaceViewModel()
-    viewModel.resultSections = [ResultSection(title: "生成结果", rows: [ResultRow(label: "IPv6 网段", value: "x")])]
+    viewModel.resultSections = [
+        ResultSection(
+            id: "translation.generated",
+            title: "生成结果",
+            rows: [ResultRow(label: "IPv6 网段", value: "x")]
+        )
+    ]
     viewModel.statusText = "IPv6 网段已生成"
     viewModel.errorMessage = "error"
     viewModel.copyAllText = "copied"

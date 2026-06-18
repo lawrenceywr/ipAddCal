@@ -42,7 +42,7 @@ struct TranslationWorkspaceView: View {
                 }
             }
             .padding()
-            .calculatorGlassPanel()
+            .calculatorWorkspaceSurface()
 
             ResultPanelView(
                 statusText: viewModel.statusText,

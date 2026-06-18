@@ -73,7 +73,7 @@ struct ResultPanelView: View {
             }
         }
         .padding()
-        .calculatorGlassPanel()
+        .calculatorWorkspaceSurface()
     }
 
     private func flash(_ text: String) {

@@ -11,16 +11,16 @@ struct BinaryBitGridView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("32 位二进制").font(.headline)
-            Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                ForEach(0..<2, id: \.self) { row in
-                    GridRow {
-                        ForEach(0..<16, id: \.self) { column in
-                            let position = row * 16 + column
-                            let bitIndex = 31 - position
+            HStack(alignment: .center, spacing: 12) {
+                ForEach(0..<4, id: \.self) { byteIndex in
+                    HStack(spacing: 6) {
+                        ForEach(0..<8, id: \.self) { offset in
+                            let position = byteIndex * 8 + offset
                             Button(String(bits[position])) {
-                                onToggle(bitIndex)
+                                onToggle(31 - position)
                             }
-                            .font(.system(.caption, design: .monospaced).bold())
+                            .font(.system(.body, design: .monospaced).weight(.semibold))
+                            .frame(width: 28, height: 28)
                             .buttonStyle(.bordered)
                             .controlSize(.small)
                         }

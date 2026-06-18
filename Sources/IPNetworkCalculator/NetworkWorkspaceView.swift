@@ -25,7 +25,7 @@ struct NetworkWorkspaceView: View {
                 }
             }
             .padding()
-            .calculatorGlassPanel()
+            .calculatorWorkspaceSurface()
 
             ResultPanelView(
                 statusText: viewModel.statusText,

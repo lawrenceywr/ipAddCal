@@ -1,6 +1,16 @@
 import Testing
 @testable import IPCalculatorFeatures
 
+@Test
+func resultSectionEqualityIncludesExplicitIdentity() {
+    let rows = [ResultRow(label: "网段", value: "192.168.1.0/24")]
+
+    #expect(
+        ResultSection(id: "network.core", title: "核心结果", rows: rows)
+            != ResultSection(id: "network.extended", title: "核心结果", rows: rows)
+    )
+}
+
 @MainActor
 @Test
 func networkWorkspaceBuildsGroupedRowsAndHistoryEntry() {
@@ -21,7 +31,13 @@ func networkWorkspaceBuildsGroupedRowsAndHistoryEntry() {
 @Test
 func networkWorkspaceRestoreResetsStaleState() {
     let viewModel = NetworkWorkspaceViewModel()
-    viewModel.resultSections = [ResultSection(title: "核心结果", rows: [ResultRow(label: "网段", value: "stale")])]
+    viewModel.resultSections = [
+        ResultSection(
+            id: "network.core",
+            title: "核心结果",
+            rows: [ResultRow(label: "网段", value: "stale")]
+        )
+    ]
     viewModel.statusText = "错误"
     viewModel.errorMessage = "stale"
     viewModel.copyAllText = "stale"

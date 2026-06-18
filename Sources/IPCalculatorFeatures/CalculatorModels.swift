@@ -71,11 +71,12 @@ public enum CalculatorMode: String, CaseIterable, Identifiable, Sendable {
 }
 
 public struct ResultSection: Identifiable, Equatable, Sendable {
-    public var id: String { title }
+    public let id: String
     public var title: String
     public var rows: [ResultRow]
 
-    public init(title: String, rows: [ResultRow]) {
+    public init(id: String, title: String, rows: [ResultRow]) {
+        self.id = id
         self.title = title
         self.rows = rows
     }
@@ -91,6 +92,12 @@ public struct ResultRow: Identifiable, Equatable, Sendable {
         self.label = label
         self.value = value
         self.isPrimaryCopyTarget = isPrimaryCopyTarget
+    }
+
+    public static func == (lhs: ResultRow, rhs: ResultRow) -> Bool {
+        lhs.label == rhs.label
+            && lhs.value == rhs.value
+            && lhs.isPrimaryCopyTarget == rhs.isPrimaryCopyTarget
     }
 }
 

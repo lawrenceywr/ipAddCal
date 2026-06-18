@@ -130,6 +130,7 @@ public final class TranslationWorkspaceViewModel {
     private func buildIPv4ToIPv6Sections(_ result: IPv4ToIPv6Result) -> [ResultSection] {
         [
             ResultSection(
+                id: "translation.generated",
                 title: "生成结果",
                 rows: [
                     ResultRow(label: "IPv4 网段", value: result.ipv4Network),
@@ -138,6 +139,7 @@ public final class TranslationWorkspaceViewModel {
                 ]
             ),
             ResultSection(
+                id: "translation.range",
                 title: "地址范围",
                 rows: [
                     ResultRow(label: "地址数量", value: result.addressCount),
@@ -151,6 +153,7 @@ public final class TranslationWorkspaceViewModel {
     private func buildIPv6ToIPv4Sections(_ result: IPv6ToIPv4Result) -> [ResultSection] {
         [
             ResultSection(
+                id: "translation.generated",
                 title: "生成结果",
                 rows: [
                     ResultRow(label: "IPv6 前缀", value: result.ipv6Prefix),
@@ -159,6 +162,7 @@ public final class TranslationWorkspaceViewModel {
                 ]
             ),
             ResultSection(
+                id: "translation.range",
                 title: "地址范围",
                 rows: [
                     ResultRow(label: "地址数量", value: result.addressCount),

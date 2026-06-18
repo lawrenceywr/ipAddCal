@@ -33,7 +33,6 @@ struct ContentView: View {
                     .popover(isPresented: $workbench.navigation.isHistoryPresented) {
                         HistoryPopoverView(
                             entries: workbench.history.entries,
-                            onCopy: { _ in },
                             onRestore: { entry in
                                 workbench.restore(entry)
                             }
