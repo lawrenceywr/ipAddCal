@@ -20,6 +20,7 @@ let package = Package(
             dependencies: ["IPCalculatorFeatures", "IPCalculatorCore"]
         ),
         .testTarget(name: "IPCalculatorCoreTests", dependencies: ["IPCalculatorCore"]),
-        .testTarget(name: "IPCalculatorFeaturesTests", dependencies: ["IPCalculatorFeatures", "IPCalculatorCore"])
+        .testTarget(name: "IPCalculatorFeaturesTests", dependencies: ["IPCalculatorFeatures", "IPCalculatorCore"]),
+        .testTarget(name: "IPNetworkCalculatorTests", dependencies: ["IPNetworkCalculator"])
     ]
 )
