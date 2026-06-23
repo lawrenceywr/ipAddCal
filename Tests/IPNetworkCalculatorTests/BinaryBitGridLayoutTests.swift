@@ -6,6 +6,7 @@ func binaryBitGridLayoutCreatesTwoRowsOfGroupedBits() {
     let layout = BinaryBitGridLayout(binary32: "00000000000000001111111111111111")
 
     #expect(layout.presentation == .intrinsicCompact)
+    #expect(layout.heightBehavior == .intrinsicCompact)
     #expect(layout.verticalDensity == .tight)
     #expect(layout.rows.count == 2)
     #expect(layout.rows.map { $0.groups.map { $0.cells.count } } == [[8, 8], [8, 8]])
@@ -15,4 +16,15 @@ func binaryBitGridLayoutCreatesTwoRowsOfGroupedBits() {
     #expect(layout.rows[1].groups.flatMap(\.cells).map(\.position) == Array(16..<32))
     #expect(layout.rows[0].groups[0].cells.map(\.bitIndex) == Array(stride(from: 31, through: 24, by: -1)))
     #expect(layout.rows[1].groups[1].cells.map(\.bitIndex) == Array(stride(from: 7, through: 0, by: -1)))
+}
+
+@Test
+func baseConversionLayoutUsesCompactBinarySurfaceMetrics() {
+    let layout = BaseConversionLayout()
+
+    #expect(layout.binarySurfacePadding.top == 14)
+    #expect(layout.binarySurfacePadding.leading == 16)
+    #expect(layout.binarySurfacePadding.bottom == 14)
+    #expect(layout.binarySurfacePadding.trailing == 16)
+    #expect(layout.binarySectionSpacing == 8)
 }

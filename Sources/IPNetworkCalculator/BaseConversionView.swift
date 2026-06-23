@@ -2,8 +2,14 @@ import SwiftUI
 import IPCalculatorCore
 import IPCalculatorFeatures
 
+struct BaseConversionLayout {
+    let binarySurfacePadding = EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16)
+    let binarySectionSpacing: CGFloat = 8
+}
+
 struct BaseConversionView: View {
     @Bindable var viewModel: BaseConversionViewModel
+    private let layout = BaseConversionLayout()
 
     var body: some View {
         VStack(alignment: .leading, spacing: WorkspaceChrome.sectionSpacing) {
@@ -15,7 +21,7 @@ struct BaseConversionView: View {
             .padding(WorkspaceChrome.surfacePadding)
             .calculatorWorkspaceSurface()
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: layout.binarySectionSpacing) {
                 BinaryBitGridView(binary32: viewModel.binary32) { bitIndex in
                     viewModel.toggle(bitIndex: bitIndex)
                 }
@@ -26,7 +32,7 @@ struct BaseConversionView: View {
                         .foregroundStyle(.red)
                 }
             }
-            .padding(WorkspaceChrome.surfacePadding)
+            .padding(layout.binarySurfacePadding)
             .calculatorWorkspaceSurface()
 
             Spacer(minLength: 0)

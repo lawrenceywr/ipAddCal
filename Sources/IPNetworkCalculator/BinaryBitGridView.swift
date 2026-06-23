@@ -5,6 +5,12 @@ struct BinaryBitGridLayout {
         case intrinsicCompact
     }
 
+    enum HeightBehavior: Equatable {
+        case intrinsicCompact
+
+        var fixesVerticalSize: Bool { true }
+    }
+
     enum VerticalDensity: Equatable {
         case tight
 
@@ -42,6 +48,7 @@ struct BinaryBitGridLayout {
     }
 
     let presentation: Presentation = .intrinsicCompact
+    let heightBehavior: HeightBehavior = .intrinsicCompact
     let verticalDensity: VerticalDensity = .tight
     let rows: [Row]
 
@@ -122,7 +129,7 @@ struct BinaryBitGridView: View {
             }
             .padding(.vertical, 2)
         }
-        .fixedSize(horizontal: true, vertical: false)
+        .fixedSize(horizontal: true, vertical: layout.heightBehavior.fixesVerticalSize)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
