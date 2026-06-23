@@ -65,36 +65,37 @@ struct BinaryBitGridView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("32 位二进制").font(.headline)
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(layout.rows.enumerated()), id: \.element.id) { rowIndex, row in
                     HStack(alignment: .top, spacing: 0) {
                         ForEach(Array(row.groups.enumerated()), id: \.element.id) { groupIndex, group in
-                            VStack(alignment: .leading, spacing: 8) {
-                                HStack(spacing: 4) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                HStack(spacing: 3) {
                                     ForEach(group.cells) { cell in
                                         Button(String(cell.character)) {
                                             onToggle(cell.bitIndex)
                                         }
-                                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                                        .frame(width: 24, height: 24)
+                                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                        .frame(width: 22, height: 22)
                                         .buttonStyle(.bordered)
                                         .controlSize(.small)
                                     }
                                 }
 
                                 Text(group.markerLabel)
-                                    .font(.caption2.weight(.semibold))
-                                    .foregroundStyle(.secondary)
+                                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                    .foregroundStyle(.tertiary)
                                     .padding(.leading, 2)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(12)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 8)
 
                             if groupIndex < row.groups.count - 1 {
                                 Divider()
-                                    .padding(.vertical, 10)
+                                    .padding(.vertical, 8)
                             }
                         }
                     }
@@ -105,7 +106,7 @@ struct BinaryBitGridView: View {
                     }
                 }
             }
-            .padding(.vertical, 4)
+            .padding(.vertical, 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

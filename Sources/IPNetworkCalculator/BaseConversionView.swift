@@ -6,26 +6,27 @@ struct BaseConversionView: View {
     @Bindable var viewModel: BaseConversionViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 12) {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(alignment: .top, spacing: 14) {
                 baseField("二进制", text: viewModel.binaryText, base: .binary)
                 baseField("十进制", text: viewModel.decimalText, base: .decimal)
                 baseField("十六进制", text: viewModel.hexadecimalText, base: .hexadecimal)
             }
-            .padding()
+            .padding(18)
             .calculatorWorkspaceSurface()
 
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 BinaryBitGridView(binary32: viewModel.binary32) { bitIndex in
                     viewModel.toggle(bitIndex: bitIndex)
                 }
 
                 if let message = viewModel.errorMessage {
                     Text(message)
+                        .font(.footnote)
                         .foregroundStyle(.red)
                 }
             }
-            .padding()
+            .padding(18)
             .calculatorWorkspaceSurface()
 
             Spacer(minLength: 0)
@@ -34,7 +35,7 @@ struct BaseConversionView: View {
     }
 
     private func baseField(_ title: String, text: String, base: NumberBase) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             Text(title).font(.headline)
             TextField(title, text: Binding(
                 get: { text },
