@@ -4,7 +4,10 @@ private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .glassEffect()
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
+            }
     }
 }
 
