@@ -17,7 +17,7 @@ struct BinaryBitGridLayout {
         var id: String { "\(rowIndex)-\(groupIndex)" }
         var leadingBitIndex: Int { cells.first?.bitIndex ?? 0 }
         var trailingBitIndex: Int { cells.last?.bitIndex ?? 0 }
-        var bitRangeLabel: String { "\(leadingBitIndex)-\(trailingBitIndex)" }
+        var markerLabel: String { "\(leadingBitIndex)" }
     }
 
     struct Row: Identifiable, Equatable {
@@ -67,15 +67,11 @@ struct BinaryBitGridView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("32 位二进制").font(.headline)
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(layout.rows) { row in
-                    HStack(alignment: .top, spacing: 12) {
-                        ForEach(row.groups) { group in
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(Array(layout.rows.enumerated()), id: \.element.id) { rowIndex, row in
+                    HStack(alignment: .top, spacing: 0) {
+                        ForEach(Array(row.groups.enumerated()), id: \.element.id) { groupIndex, group in
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("\(group.bitRangeLabel) 位")
-                                    .font(.caption.weight(.semibold))
-                                    .foregroundStyle(.secondary)
-
                                 HStack(spacing: 4) {
                                     ForEach(group.cells) { cell in
                                         Button(String(cell.character)) {
@@ -88,29 +84,36 @@ struct BinaryBitGridView: View {
                                     }
                                 }
 
-                                HStack {
-                                    Text("\(group.leadingBitIndex)")
-                                    Spacer()
-                                    Text("\(group.trailingBitIndex)")
-                                }
-                                .font(.caption2.weight(.medium))
-                                .foregroundStyle(.tertiary)
+                                Text(group.markerLabel)
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+                                    .padding(.leading, 2)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .fill(Color.primary.opacity(0.05))
-                            )
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
-                            )
+
+                            if groupIndex < row.groups.count - 1 {
+                                Divider()
+                                    .padding(.vertical, 10)
+                            }
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if rowIndex < layout.rows.count - 1 {
+                        Divider()
+                    }
                 }
             }
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.primary.opacity(0.035))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

@@ -7,8 +7,8 @@ func binaryBitGridLayoutCreatesTwoRowsOfGroupedBits() {
 
     #expect(layout.rows.count == 2)
     #expect(layout.rows.map { $0.groups.map { $0.cells.count } } == [[8, 8], [8, 8]])
-    #expect(layout.rows[0].groups.map(\.bitRangeLabel) == ["31-24", "23-16"])
-    #expect(layout.rows[1].groups.map(\.bitRangeLabel) == ["15-8", "7-0"])
+    #expect(layout.rows[0].groups.map(\.markerLabel) == ["31", "23"])
+    #expect(layout.rows[1].groups.map(\.markerLabel) == ["15", "7"])
     #expect(layout.rows[0].groups.flatMap(\.cells).map(\.position) == Array(0..<16))
     #expect(layout.rows[1].groups.flatMap(\.cells).map(\.position) == Array(16..<32))
     #expect(layout.rows[0].groups[0].cells.map(\.bitIndex) == Array(stride(from: 31, through: 24, by: -1)))
