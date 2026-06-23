@@ -12,7 +12,7 @@ struct ResultPanelView: View {
     @State private var feedback = ""
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text(feedback.isEmpty ? statusText : feedback)
                     .font(.headline)
@@ -23,12 +23,14 @@ struct ResultPanelView: View {
                         ClipboardService.copy(primaryCopyText)
                         flash("已复制：\(primaryCopyLabel)")
                     }
+                    .controlSize(.small)
                 }
                 if !copyAllText.isEmpty {
                     Button("复制全部") {
                         ClipboardService.copy(copyAllText)
                         flash("已复制：全部结果")
                     }
+                    .controlSize(.small)
                 }
             }
 
@@ -72,7 +74,7 @@ struct ResultPanelView: View {
                 }
             }
         }
-        .padding()
+        .padding(WorkspaceChrome.surfacePadding)
         .calculatorWorkspaceSurface()
     }
 

@@ -8,7 +8,7 @@ struct HistoryPopoverView: View {
     @State private var copiedEntryID: HistoryEntry.ID?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             Text("历史记录")
                 .font(.headline)
 
@@ -51,7 +51,7 @@ struct HistoryPopoverView: View {
                 .frame(maxHeight: 320)
             }
         }
-        .padding(16)
+        .padding(WorkspaceChrome.surfacePadding)
         .frame(width: 360, alignment: .leading)
         .calculatorPopoverSurface()
     }

@@ -11,5 +11,6 @@ struct IPWorkspacePickerView: View {
             }
         }
         .pickerStyle(.segmented)
+        .controlSize(.large)
     }
 }

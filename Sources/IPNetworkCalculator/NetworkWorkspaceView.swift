@@ -7,8 +7,8 @@ struct NetworkWorkspaceView: View {
     let onCalculate: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: WorkspaceChrome.sectionSpacing) {
+            VStack(alignment: .leading, spacing: 14) {
                 field(
                     "地址/前缀或掩码",
                     example: "192.168.1.10/24、10.0.0.7/255.255.255.248 或 2001:db8::1/126",
@@ -24,7 +24,7 @@ struct NetworkWorkspaceView: View {
                     .buttonStyle(.borderedProminent)
                 }
             }
-            .padding()
+            .padding(WorkspaceChrome.surfacePadding)
             .calculatorWorkspaceSurface()
 
             ResultPanelView(
@@ -41,10 +41,10 @@ struct NetworkWorkspaceView: View {
     }
 
     private func field(_ title: String, example: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.headline)
+        VStack(alignment: .leading, spacing: WorkspaceChrome.fieldLabelSpacing) {
+            Text(title).font(.subheadline.weight(.semibold))
             Text(example)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
             TextField(title, text: normalizedBinding(text))
                 .font(.system(.body, design: .monospaced))

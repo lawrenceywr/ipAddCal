@@ -7,18 +7,18 @@ struct TranslationWorkspaceView: View {
     let onCalculate: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: WorkspaceChrome.sectionSpacing) {
+            VStack(alignment: .leading, spacing: 14) {
                 TranslationDirectionPickerView(selection: $viewModel.direction)
 
                 switch viewModel.direction {
                 case .ipv4ToIPv6:
-                    HStack(spacing: 12) {
+                    HStack(spacing: WorkspaceChrome.controlSpacing) {
                         field("IPv4 网段", example: "48.235.24.0/30", text: $viewModel.ipv4Input)
                         field("IPv6 前 96 位", example: "2001:db8::", text: $viewModel.ipv6PrefixInput)
                     }
                 case .ipv6ToIPv4:
-                    HStack(spacing: 12) {
+                    HStack(spacing: WorkspaceChrome.controlSpacing) {
                         field(
                             "IPv6 地址/网段",
                             example: "2001:db8::30eb:1800/126",
@@ -41,7 +41,7 @@ struct TranslationWorkspaceView: View {
                     .buttonStyle(.borderedProminent)
                 }
             }
-            .padding()
+            .padding(WorkspaceChrome.surfacePadding)
             .calculatorWorkspaceSurface()
 
             ResultPanelView(
@@ -58,10 +58,10 @@ struct TranslationWorkspaceView: View {
     }
 
     private func field(_ title: String, example: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title).font(.headline)
+        VStack(alignment: .leading, spacing: WorkspaceChrome.fieldLabelSpacing) {
+            Text(title).font(.subheadline.weight(.semibold))
             Text(example)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
             TextField(title, text: normalizedBinding(text))
                 .font(.system(.body, design: .monospaced))

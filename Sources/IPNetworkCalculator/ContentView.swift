@@ -18,18 +18,20 @@ struct ContentView: View {
                     BaseConversionView(viewModel: workbench.baseConversionWorkspace)
                 }
             }
-            .padding(24)
+            .padding(WorkspaceChrome.contentPadding)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(workbench.windowTitle)
-                        .font(.headline)
+                        .font(.title3.weight(.semibold))
                 }
 
                 ToolbarItem {
                     Button("历史") {
                         workbench.navigation.isHistoryPresented.toggle()
                     }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
                     .popover(isPresented: $workbench.navigation.isHistoryPresented) {
                         HistoryPopoverView(
                             entries: workbench.history.entries,

@@ -6,13 +6,13 @@ struct BaseConversionView: View {
     @Bindable var viewModel: BaseConversionViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(alignment: .top, spacing: 14) {
+        VStack(alignment: .leading, spacing: WorkspaceChrome.sectionSpacing) {
+            HStack(alignment: .top, spacing: WorkspaceChrome.controlSpacing) {
                 baseField("二进制", text: viewModel.binaryText, base: .binary)
                 baseField("十进制", text: viewModel.decimalText, base: .decimal)
                 baseField("十六进制", text: viewModel.hexadecimalText, base: .hexadecimal)
             }
-            .padding(18)
+            .padding(WorkspaceChrome.surfacePadding)
             .calculatorWorkspaceSurface()
 
             VStack(alignment: .leading, spacing: 10) {
@@ -26,7 +26,7 @@ struct BaseConversionView: View {
                         .foregroundStyle(.red)
                 }
             }
-            .padding(18)
+            .padding(WorkspaceChrome.surfacePadding)
             .calculatorWorkspaceSurface()
 
             Spacer(minLength: 0)
@@ -35,8 +35,8 @@ struct BaseConversionView: View {
     }
 
     private func baseField(_ title: String, text: String, base: NumberBase) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(.headline)
+        VStack(alignment: .leading, spacing: WorkspaceChrome.fieldLabelSpacing) {
+            Text(title).font(.subheadline.weight(.semibold))
             TextField(title, text: Binding(
                 get: { text },
                 set: { newValue in viewModel.update(text: newValue, base: base) }

@@ -1,5 +1,13 @@
 import SwiftUI
 
+enum WorkspaceChrome {
+    static let contentPadding: CGFloat = 22
+    static let surfacePadding: CGFloat = 18
+    static let sectionSpacing: CGFloat = 18
+    static let controlSpacing: CGFloat = 14
+    static let fieldLabelSpacing: CGFloat = 6
+}
+
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
