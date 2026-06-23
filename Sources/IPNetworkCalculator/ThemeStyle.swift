@@ -28,6 +28,13 @@ struct CalculatorChromeStyle: Equatable {
     let toolbarLineOpacity: Double
 }
 
+struct CalculatorFieldChrome: Equatable {
+    let cornerRadius: CGFloat
+    let horizontalPadding: CGFloat
+    let verticalPadding: CGFloat
+    let strokeOpacity: Double
+}
+
 struct CalculatorTheme: Equatable {
     let enforcesDarkAppearance: Bool
     let accentMode: ThemeAccentMode
@@ -71,6 +78,15 @@ extension CalculatorTheme {
             sidebarFillOpacity: 0.96,
             detailFillOpacity: 0.92,
             toolbarLineOpacity: 0.06
+        )
+    }
+
+    var fieldChrome: CalculatorFieldChrome {
+        CalculatorFieldChrome(
+            cornerRadius: 12,
+            horizontalPadding: 12,
+            verticalPadding: 10,
+            strokeOpacity: 0.14
         )
     }
 }

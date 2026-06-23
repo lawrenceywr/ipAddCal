@@ -62,10 +62,11 @@ struct TranslationWorkspaceView: View {
             Text(title).font(.subheadline.weight(.semibold))
             Text(example)
                 .font(.footnote)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(CalculatorTheme.defaultDark.secondaryLabel)
             TextField(title, text: normalizedBinding(text))
                 .font(.system(.body, design: .monospaced))
-                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.plain)
+                .calculatorFieldChrome()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

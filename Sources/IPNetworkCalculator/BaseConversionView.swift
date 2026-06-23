@@ -48,11 +48,8 @@ struct BaseConversionView: View {
                 set: { newValue in viewModel.update(text: newValue, base: base) }
             ))
                 .font(.system(.body, design: .monospaced))
-                .textFieldStyle(.roundedBorder)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 6)
-                        .stroke(viewModel.invalidBase == base ? Color.red : Color.clear, lineWidth: 1)
-                }
+                .textFieldStyle(.plain)
+                .calculatorFieldChrome(invalid: viewModel.invalidBase == base)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

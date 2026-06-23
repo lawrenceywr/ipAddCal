@@ -26,11 +26,51 @@ private struct ChromeBackgroundModifier: ViewModifier {
 
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
+        let surface = theme.workspaceSurface
+
         content
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .background(
+                theme.contentBase.opacity(surface.fillOpacity),
+                in: RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+            )
             .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
+            }
+            .overlay(alignment: .top) {
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .mask {
+                        LinearGradient(
+                            colors: [.white, .white.opacity(0)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+            }
+            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 18, y: 10)
+    }
+}
+
+private struct CalculatorFieldModifier: ViewModifier {
+    var invalid: Bool
+
+    func body(content: Content) -> some View {
+        let field = theme.fieldChrome
+
+        content
+            .padding(.horizontal, field.horizontalPadding)
+            .padding(.vertical, field.verticalPadding)
+            .background(
+                theme.chromeElevated.opacity(0.92),
+                in: RoundedRectangle(cornerRadius: field.cornerRadius, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: field.cornerRadius, style: .continuous)
+                    .stroke(
+                        invalid ? theme.error : .white.opacity(field.strokeOpacity),
+                        lineWidth: invalid ? 1.3 : 1
+                    )
             }
     }
 }
@@ -54,5 +94,9 @@ extension View {
 
     func calculatorPopoverSurface() -> some View {
         modifier(PopoverSurfaceModifier())
+    }
+
+    func calculatorFieldChrome(invalid: Bool = false) -> some View {
+        modifier(CalculatorFieldModifier(invalid: invalid))
     }
 }

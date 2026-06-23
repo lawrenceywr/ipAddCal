@@ -12,5 +12,6 @@ struct TranslationDirectionPickerView: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.large)
+        .tint(CalculatorTheme.defaultDark.accentMode.tint)
     }
 }

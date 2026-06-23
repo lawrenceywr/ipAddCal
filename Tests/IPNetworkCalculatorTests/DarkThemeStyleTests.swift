@@ -39,3 +39,13 @@ func defaultDarkThemeDefinesChromeHierarchy() {
     #expect(theme.chrome.detailFillOpacity < theme.chrome.sidebarFillOpacity)
     #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
 }
+
+@Test
+func defaultDarkThemeDefinesReadableFieldChrome() {
+    let field = CalculatorTheme.defaultDark.fieldChrome
+
+    #expect(field.cornerRadius == 12)
+    #expect(field.horizontalPadding == 12)
+    #expect(field.verticalPadding == 10)
+    #expect(field.strokeOpacity == 0.14)
+}
