@@ -5,6 +5,16 @@ struct BinaryBitGridLayout {
         case intrinsicCompact
     }
 
+    enum VerticalDensity: Equatable {
+        case tight
+
+        var groupSpacing: CGFloat { 4 }
+        var groupVerticalPadding: CGFloat { 5 }
+        var groupHorizontalPadding: CGFloat { 8 }
+        var dividerInset: CGFloat { 5 }
+        var markerFontSize: CGFloat { 10 }
+    }
+
     struct Cell: Identifiable, Equatable {
         let position: Int
         let character: Character
@@ -32,6 +42,7 @@ struct BinaryBitGridLayout {
     }
 
     let presentation: Presentation = .intrinsicCompact
+    let verticalDensity: VerticalDensity = .tight
     let rows: [Row]
 
     init(binary32: String) {
@@ -76,7 +87,7 @@ struct BinaryBitGridView: View {
                 ForEach(Array(layout.rows.enumerated()), id: \.element.id) { rowIndex, row in
                     HStack(alignment: .top, spacing: 0) {
                         ForEach(Array(row.groups.enumerated()), id: \.element.id) { groupIndex, group in
-                            VStack(alignment: .leading, spacing: 6) {
+                            VStack(alignment: .leading, spacing: layout.verticalDensity.groupSpacing) {
                                 HStack(spacing: 3) {
                                     ForEach(group.cells) { cell in
                                         Button(String(cell.character)) {
@@ -90,16 +101,16 @@ struct BinaryBitGridView: View {
                                 }
 
                                 Text(group.markerLabel)
-                                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                                    .font(.system(size: layout.verticalDensity.markerFontSize, weight: .semibold, design: .monospaced))
                                     .foregroundStyle(.tertiary)
                                     .padding(.leading, 2)
                             }
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 8)
+                            .padding(.horizontal, layout.verticalDensity.groupHorizontalPadding)
+                            .padding(.vertical, layout.verticalDensity.groupVerticalPadding)
 
                             if groupIndex < row.groups.count - 1 {
                                 Divider()
-                                    .padding(.vertical, 8)
+                                    .padding(.vertical, layout.verticalDensity.dividerInset)
                             }
                         }
                     }

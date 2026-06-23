@@ -6,6 +6,7 @@ func binaryBitGridLayoutCreatesTwoRowsOfGroupedBits() {
     let layout = BinaryBitGridLayout(binary32: "00000000000000001111111111111111")
 
     #expect(layout.presentation == .intrinsicCompact)
+    #expect(layout.verticalDensity == .tight)
     #expect(layout.rows.count == 2)
     #expect(layout.rows.map { $0.groups.map { $0.cells.count } } == [[8, 8], [8, 8]])
     #expect(layout.rows[0].groups.map(\.markerLabel) == ["31", "23"])
