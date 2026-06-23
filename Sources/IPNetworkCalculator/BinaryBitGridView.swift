@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct BinaryBitGridLayout {
+    enum Presentation: Equatable {
+        case intrinsicCompact
+    }
+
     struct Cell: Identifiable, Equatable {
         let position: Int
         let character: Character
@@ -27,6 +31,7 @@ struct BinaryBitGridLayout {
         var id: Int { index }
     }
 
+    let presentation: Presentation = .intrinsicCompact
     let rows: [Row]
 
     init(binary32: String) {
@@ -89,7 +94,6 @@ struct BinaryBitGridView: View {
                                     .foregroundStyle(.tertiary)
                                     .padding(.leading, 2)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.horizontal, 10)
                             .padding(.vertical, 8)
 
@@ -99,7 +103,6 @@ struct BinaryBitGridView: View {
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
 
                     if rowIndex < layout.rows.count - 1 {
                         Divider()
@@ -108,6 +111,7 @@ struct BinaryBitGridView: View {
             }
             .padding(.vertical, 2)
         }
+        .fixedSize(horizontal: true, vertical: false)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
