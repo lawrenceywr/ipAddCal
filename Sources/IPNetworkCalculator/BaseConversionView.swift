@@ -12,15 +12,25 @@ struct BaseConversionView: View {
                 baseField("十进制", text: viewModel.decimalText, base: .decimal)
                 baseField("十六进制", text: viewModel.hexadecimalText, base: .hexadecimal)
             }
-            BinaryBitGridView(binary32: viewModel.binary32) { bitIndex in
-                viewModel.toggle(bitIndex: bitIndex)
+            .padding()
+            .calculatorWorkspaceSurface()
+
+            VStack(alignment: .leading, spacing: 12) {
+                BinaryBitGridView(binary32: viewModel.binary32) { bitIndex in
+                    viewModel.toggle(bitIndex: bitIndex)
+                }
+
+                if let message = viewModel.errorMessage {
+                    Text(message)
+                        .foregroundStyle(.red)
+                }
             }
-            if let message = viewModel.errorMessage {
-                Text(message).foregroundStyle(.red)
-            }
+            .padding()
+            .calculatorWorkspaceSurface()
+
+            Spacer(minLength: 0)
         }
-        .padding()
-        .calculatorWorkspaceSurface()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
     private func baseField(_ title: String, text: String, base: NumberBase) -> some View {
@@ -37,5 +47,6 @@ struct BaseConversionView: View {
                         .stroke(viewModel.invalidBase == base ? Color.red : Color.clear, lineWidth: 1)
                 }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
