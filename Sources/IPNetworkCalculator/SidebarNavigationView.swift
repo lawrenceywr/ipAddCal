@@ -11,7 +11,6 @@ struct SidebarNavigationView: View {
                 .tag(workspace)
         }
         .scrollContentBackground(.hidden)
-        .background(CalculatorTheme.defaultDark.chromeBase)
         .listStyle(.sidebar)
     }
 

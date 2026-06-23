@@ -34,6 +34,8 @@ func defaultDarkThemeDefinesChromeHierarchy() {
     let theme = CalculatorTheme.defaultDark
 
     #expect(theme.chrome.sidebarFillOpacity == 0.96)
+    #expect(theme.chrome.detailFillOpacity == 0.92)
     #expect(theme.chrome.toolbarLineOpacity == 0.06)
+    #expect(theme.chrome.detailFillOpacity < theme.chrome.sidebarFillOpacity)
     #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
 }

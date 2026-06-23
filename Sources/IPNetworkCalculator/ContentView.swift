@@ -23,6 +23,7 @@ struct ContentView: View {
             .padding(WorkspaceChrome.contentPadding)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(theme.windowBase.gradient)
+            .calculatorChromeBackground(fillOpacity: theme.chrome.detailFillOpacity)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Text(workbench.windowTitle)
@@ -47,5 +48,8 @@ struct ContentView: View {
                 }
             }
         }
+        .toolbarBackground(theme.chromeBase.opacity(theme.chrome.detailFillOpacity), for: .windowToolbar)
+        .toolbarBackground(.visible, for: .windowToolbar)
+        .toolbarColorScheme(.dark, for: .windowToolbar)
     }
 }

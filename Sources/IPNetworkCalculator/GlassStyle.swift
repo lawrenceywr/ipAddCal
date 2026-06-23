@@ -11,9 +11,11 @@ enum WorkspaceChrome {
 private let theme = CalculatorTheme.defaultDark
 
 private struct ChromeBackgroundModifier: ViewModifier {
+    let fillOpacity: Double
+
     func body(content: Content) -> some View {
         content
-            .background(theme.chromeBase.opacity(theme.chrome.sidebarFillOpacity))
+            .background(theme.chromeBase.opacity(fillOpacity))
             .overlay(alignment: .top) {
                 Rectangle()
                     .fill(.white.opacity(theme.chrome.toolbarLineOpacity))
@@ -42,8 +44,8 @@ private struct PopoverSurfaceModifier: ViewModifier {
 }
 
 extension View {
-    func calculatorChromeBackground() -> some View {
-        modifier(ChromeBackgroundModifier())
+    func calculatorChromeBackground(fillOpacity: Double = theme.chrome.sidebarFillOpacity) -> some View {
+        modifier(ChromeBackgroundModifier(fillOpacity: fillOpacity))
     }
 
     func calculatorWorkspaceSurface() -> some View {
