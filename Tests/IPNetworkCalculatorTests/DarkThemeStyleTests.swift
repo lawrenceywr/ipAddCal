@@ -28,3 +28,12 @@ func defaultDarkThemeUsesGraphiteSurfaceHierarchy() {
     #expect(popover.highlightOpacity == 0.28)
     #expect(popover.shadowOpacity == 0.24)
 }
+
+@Test
+func defaultDarkThemeDefinesChromeHierarchy() {
+    let theme = CalculatorTheme.defaultDark
+
+    #expect(theme.chrome.sidebarFillOpacity == 0.96)
+    #expect(theme.chrome.toolbarLineOpacity == 0.06)
+    #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
+}

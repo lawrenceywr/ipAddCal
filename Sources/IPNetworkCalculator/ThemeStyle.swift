@@ -22,6 +22,11 @@ struct CalculatorSurfaceStyle: Equatable {
     let shadowOpacity: Double
 }
 
+struct CalculatorChromeStyle: Equatable {
+    var sidebarFillOpacity: Double
+    var toolbarLineOpacity: Double
+}
+
 struct CalculatorTheme: Equatable {
     let enforcesDarkAppearance: Bool
     let accentMode: ThemeAccentMode
@@ -57,4 +62,13 @@ struct CalculatorTheme: Equatable {
             shadowOpacity: 0.24
         )
     )
+}
+
+extension CalculatorTheme {
+    var chrome: CalculatorChromeStyle {
+        CalculatorChromeStyle(
+            sidebarFillOpacity: 0.96,
+            toolbarLineOpacity: 0.06
+        )
+    }
 }

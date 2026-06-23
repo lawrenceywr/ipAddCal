@@ -7,8 +7,11 @@ struct SidebarNavigationView: View {
     var body: some View {
         List(AppWorkspace.allCases, selection: listSelection) { workspace in
             Text(workspace.title)
+                .foregroundStyle(.white.opacity(0.92))
                 .tag(workspace)
         }
+        .scrollContentBackground(.hidden)
+        .background(CalculatorTheme.defaultDark.chromeBase)
         .listStyle(.sidebar)
     }
 

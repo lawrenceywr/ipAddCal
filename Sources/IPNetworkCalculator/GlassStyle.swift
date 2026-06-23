@@ -8,6 +8,20 @@ enum WorkspaceChrome {
     static let fieldLabelSpacing: CGFloat = 6
 }
 
+private let theme = CalculatorTheme.defaultDark
+
+private struct ChromeBackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .background(theme.chromeBase.opacity(theme.chrome.sidebarFillOpacity))
+            .overlay(alignment: .top) {
+                Rectangle()
+                    .fill(.white.opacity(theme.chrome.toolbarLineOpacity))
+                    .frame(height: 1)
+            }
+    }
+}
+
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
@@ -28,6 +42,10 @@ private struct PopoverSurfaceModifier: ViewModifier {
 }
 
 extension View {
+    func calculatorChromeBackground() -> some View {
+        modifier(ChromeBackgroundModifier())
+    }
+
     func calculatorWorkspaceSurface() -> some View {
         modifier(WorkspaceSurfaceModifier())
     }
