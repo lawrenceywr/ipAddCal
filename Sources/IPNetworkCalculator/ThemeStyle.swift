@@ -15,27 +15,27 @@ enum ThemeSurfaceContrast: Equatable {
 }
 
 struct CalculatorSurfaceStyle: Equatable {
-    var cornerRadius: CGFloat
-    var fillOpacity: Double
-    var strokeOpacity: Double
-    var highlightOpacity: Double
-    var shadowOpacity: Double
+    let cornerRadius: CGFloat
+    let fillOpacity: Double
+    let strokeOpacity: Double
+    let highlightOpacity: Double
+    let shadowOpacity: Double
 }
 
 struct CalculatorTheme: Equatable {
-    var enforcesDarkAppearance: Bool
-    var accentMode: ThemeAccentMode
-    var glassIntensity: ThemeGlassIntensity
-    var surfaceContrast: ThemeSurfaceContrast
-    var windowBase = Color(red: 0.115, green: 0.121, blue: 0.139)
-    var chromeBase = Color(red: 0.148, green: 0.156, blue: 0.178)
-    var chromeElevated = Color(red: 0.178, green: 0.186, blue: 0.212)
-    var contentBase = Color(red: 0.205, green: 0.214, blue: 0.244)
-    var divider = Color.white.opacity(0.10)
-    var secondaryLabel = Color.white.opacity(0.64)
-    var error = Color(red: 0.93, green: 0.42, blue: 0.42)
-    var workspaceSurface: CalculatorSurfaceStyle
-    var popoverSurface: CalculatorSurfaceStyle
+    let enforcesDarkAppearance: Bool
+    let accentMode: ThemeAccentMode
+    let glassIntensity: ThemeGlassIntensity
+    let surfaceContrast: ThemeSurfaceContrast
+    let windowBase = Color(red: 0.115, green: 0.121, blue: 0.139)
+    let chromeBase = Color(red: 0.148, green: 0.156, blue: 0.178)
+    let chromeElevated = Color(red: 0.178, green: 0.186, blue: 0.212)
+    let contentBase = Color(red: 0.205, green: 0.214, blue: 0.244)
+    let divider = Color.white.opacity(0.10)
+    let secondaryLabel = Color.white.opacity(0.64)
+    let error = Color(red: 0.93, green: 0.42, blue: 0.42)
+    let workspaceSurface: CalculatorSurfaceStyle
+    let popoverSurface: CalculatorSurfaceStyle
 
     static let defaultDark = CalculatorTheme(
         enforcesDarkAppearance: true,
