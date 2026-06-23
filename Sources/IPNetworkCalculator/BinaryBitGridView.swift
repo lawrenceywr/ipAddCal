@@ -15,6 +15,9 @@ struct BinaryBitGridLayout {
         let cells: [Cell]
 
         var id: String { "\(rowIndex)-\(groupIndex)" }
+        var leadingBitIndex: Int { cells.first?.bitIndex ?? 0 }
+        var trailingBitIndex: Int { cells.last?.bitIndex ?? 0 }
+        var bitRangeLabel: String { "\(leadingBitIndex)-\(trailingBitIndex)" }
     }
 
     struct Row: Identifiable, Equatable {
@@ -62,27 +65,53 @@ struct BinaryBitGridView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("32 位二进制").font(.headline)
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 ForEach(layout.rows) { row in
-                    HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .top, spacing: 12) {
                         ForEach(row.groups) { group in
-                            HStack(spacing: 4) {
-                                ForEach(group.cells) { cell in
-                                    Button(String(cell.character)) {
-                                        onToggle(cell.bitIndex)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("\(group.bitRangeLabel) 位")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.secondary)
+
+                                HStack(spacing: 4) {
+                                    ForEach(group.cells) { cell in
+                                        Button(String(cell.character)) {
+                                            onToggle(cell.bitIndex)
+                                        }
+                                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                                        .frame(width: 24, height: 24)
+                                        .buttonStyle(.bordered)
+                                        .controlSize(.small)
                                     }
-                                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                                    .frame(width: 24, height: 24)
-                                    .buttonStyle(.bordered)
-                                    .controlSize(.small)
                                 }
+
+                                HStack {
+                                    Text("\(group.leadingBitIndex)")
+                                    Spacer()
+                                    Text("\(group.trailingBitIndex)")
+                                }
+                                .font(.caption2.weight(.medium))
+                                .foregroundStyle(.tertiary)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .fill(Color.primary.opacity(0.05))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    .stroke(Color.primary.opacity(0.08), lineWidth: 1)
+                            )
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
