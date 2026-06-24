@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import IPNetworkCalculator
 
@@ -75,4 +76,29 @@ func defaultDarkThemeDefinesCustomResultSectionChrome() {
     #expect(section.headerSpacing == 8)
     #expect(section.fillOpacity == 0.76)
     #expect(section.strokeOpacity == 0.12)
+}
+
+@Test
+func darkThemeViewsUseSemanticErrorColor() throws {
+    let packageRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+    let targetRoot = packageRoot.appending(path: "Sources/IPNetworkCalculator")
+    let sourceFiles = FileManager.default.enumerator(
+        at: targetRoot,
+        includingPropertiesForKeys: nil
+    )?
+        .compactMap { $0 as? URL }
+        .filter { $0.pathExtension == "swift" } ?? []
+
+    var directSystemRedUsages: [String] = []
+    for sourceFile in sourceFiles {
+        let source = try String(contentsOf: sourceFile, encoding: .utf8)
+        if source.contains(".foregroundStyle(.red)") || source.contains("Color.red") {
+            directSystemRedUsages.append(sourceFile.lastPathComponent)
+        }
+    }
+
+    #expect(directSystemRedUsages.isEmpty)
 }

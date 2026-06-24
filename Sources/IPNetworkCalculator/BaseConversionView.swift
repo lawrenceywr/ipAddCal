@@ -29,7 +29,7 @@ struct BaseConversionView: View {
                 if let message = viewModel.errorMessage {
                     Text(message)
                         .font(.footnote)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(CalculatorTheme.defaultDark.error)
                 }
             }
             .padding(layout.binarySurfacePadding)
