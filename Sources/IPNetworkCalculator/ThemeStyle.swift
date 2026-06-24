@@ -81,6 +81,10 @@ extension CalculatorTheme {
         )
     }
 
+    var formSurface: CalculatorSurfaceStyle {
+        workspaceSurface
+    }
+
     var fieldChrome: CalculatorFieldChrome {
         CalculatorFieldChrome(
             cornerRadius: 12,

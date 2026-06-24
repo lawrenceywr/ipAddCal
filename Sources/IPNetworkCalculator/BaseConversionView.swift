@@ -19,7 +19,7 @@ struct BaseConversionView: View {
                 baseField("十六进制", text: viewModel.hexadecimalText, base: .hexadecimal)
             }
             .padding(WorkspaceChrome.surfacePadding)
-            .calculatorWorkspaceSurface()
+            .calculatorFormSurface()
 
             VStack(alignment: .leading, spacing: layout.binarySectionSpacing) {
                 BinaryBitGridView(binary32: viewModel.binary32) { bitIndex in

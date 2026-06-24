@@ -49,3 +49,14 @@ func defaultDarkThemeDefinesReadableFieldChrome() {
     #expect(field.verticalPadding == 10)
     #expect(field.strokeOpacity == 0.14)
 }
+
+@Test
+func defaultDarkThemeDefinesReadableFormSurfaceChrome() {
+    let surface = CalculatorTheme.defaultDark.formSurface
+
+    #expect(surface.cornerRadius == 20)
+    #expect(surface.fillOpacity == 0.78)
+    #expect(surface.strokeOpacity == 0.18)
+    #expect(surface.highlightOpacity == 0.24)
+    #expect(surface.shadowOpacity == 0.22)
+}

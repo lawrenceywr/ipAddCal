@@ -26,7 +26,18 @@ private struct ChromeBackgroundModifier: ViewModifier {
 
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
-        let surface = theme.workspaceSurface
+        content
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
+            }
+    }
+}
+
+private struct CalculatorFormSurfaceModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        let surface = theme.formSurface
 
         content
             .background(
@@ -90,6 +101,10 @@ extension View {
 
     func calculatorWorkspaceSurface() -> some View {
         modifier(WorkspaceSurfaceModifier())
+    }
+
+    func calculatorFormSurface() -> some View {
+        modifier(CalculatorFormSurfaceModifier())
     }
 
     func calculatorPopoverSurface() -> some View {

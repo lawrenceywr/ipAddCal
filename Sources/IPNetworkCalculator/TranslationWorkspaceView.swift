@@ -42,7 +42,7 @@ struct TranslationWorkspaceView: View {
                 }
             }
             .padding(WorkspaceChrome.surfacePadding)
-            .calculatorWorkspaceSurface()
+            .calculatorFormSurface()
 
             ResultPanelView(
                 statusText: viewModel.statusText,
