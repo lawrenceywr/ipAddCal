@@ -73,14 +73,14 @@ private struct CalculatorFieldModifier: ViewModifier {
             .padding(.horizontal, field.horizontalPadding)
             .padding(.vertical, field.verticalPadding)
             .background(
-                theme.chromeElevated.opacity(0.92),
+                theme.chromeElevated.opacity(field.fillOpacity),
                 in: RoundedRectangle(cornerRadius: field.cornerRadius, style: .continuous)
             )
             .overlay {
                 RoundedRectangle(cornerRadius: field.cornerRadius, style: .continuous)
                     .stroke(
                         invalid ? theme.error : .white.opacity(field.strokeOpacity),
-                        lineWidth: invalid ? 1.3 : 1
+                        lineWidth: invalid ? field.invalidStrokeWidth : field.strokeWidth
                     )
             }
     }

@@ -32,7 +32,10 @@ struct CalculatorFieldChrome: Equatable {
     let cornerRadius: CGFloat
     let horizontalPadding: CGFloat
     let verticalPadding: CGFloat
+    let fillOpacity: Double
     let strokeOpacity: Double
+    let strokeWidth: CGFloat
+    let invalidStrokeWidth: CGFloat
 }
 
 struct CalculatorTheme: Equatable {
@@ -48,6 +51,7 @@ struct CalculatorTheme: Equatable {
     let secondaryLabel = Color.white.opacity(0.64)
     let error = Color(red: 0.93, green: 0.42, blue: 0.42)
     let workspaceSurface: CalculatorSurfaceStyle
+    let formSurface: CalculatorSurfaceStyle
     let popoverSurface: CalculatorSurfaceStyle
 
     static let defaultDark = CalculatorTheme(
@@ -56,6 +60,13 @@ struct CalculatorTheme: Equatable {
         glassIntensity: .elevated,
         surfaceContrast: .clearBoundaries,
         workspaceSurface: CalculatorSurfaceStyle(
+            cornerRadius: 20,
+            fillOpacity: 0.78,
+            strokeOpacity: 0.18,
+            highlightOpacity: 0.24,
+            shadowOpacity: 0.22
+        ),
+        formSurface: CalculatorSurfaceStyle(
             cornerRadius: 20,
             fillOpacity: 0.78,
             strokeOpacity: 0.18,
@@ -81,16 +92,15 @@ extension CalculatorTheme {
         )
     }
 
-    var formSurface: CalculatorSurfaceStyle {
-        workspaceSurface
-    }
-
     var fieldChrome: CalculatorFieldChrome {
         CalculatorFieldChrome(
             cornerRadius: 12,
             horizontalPadding: 12,
             verticalPadding: 10,
-            strokeOpacity: 0.14
+            fillOpacity: 0.92,
+            strokeOpacity: 0.14,
+            strokeWidth: 1,
+            invalidStrokeWidth: 1.3
         )
     }
 }

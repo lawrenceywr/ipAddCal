@@ -47,7 +47,10 @@ func defaultDarkThemeDefinesReadableFieldChrome() {
     #expect(field.cornerRadius == 12)
     #expect(field.horizontalPadding == 12)
     #expect(field.verticalPadding == 10)
+    #expect(field.fillOpacity == 0.92)
     #expect(field.strokeOpacity == 0.14)
+    #expect(field.strokeWidth == 1)
+    #expect(field.invalidStrokeWidth == 1.3)
 }
 
 @Test
