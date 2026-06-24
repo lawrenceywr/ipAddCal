@@ -2,6 +2,8 @@ import SwiftUI
 import IPCalculatorFeatures
 
 struct ResultPanelView: View {
+    private let theme = CalculatorTheme.defaultDark
+
     let statusText: String
     let errorMessage: String?
     let sections: [ResultSection]
@@ -16,7 +18,7 @@ struct ResultPanelView: View {
             HStack {
                 Text(feedback.isEmpty ? statusText : feedback)
                     .font(.headline)
-                    .foregroundStyle(errorMessage == nil ? Color.primary : Color.red)
+                    .foregroundStyle(errorMessage == nil ? .white : theme.error)
                 Spacer()
                 if !primaryCopyText.isEmpty {
                     Button("复制 \(primaryCopyLabel)") {
@@ -35,23 +37,25 @@ struct ResultPanelView: View {
             }
 
             if let errorMessage {
-                Text(errorMessage).foregroundStyle(.red)
+                Text(errorMessage).foregroundStyle(theme.error)
             } else if sections.isEmpty {
-                Text("暂无结果").foregroundStyle(.secondary)
+                Text("暂无结果").foregroundStyle(theme.secondaryLabel)
             } else {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: theme.resultSection.rowSpacing) {
                     ForEach(sections) { section in
-                        GroupBox {
+                        ResultSectionContainer(title: section.title, theme: theme) {
                             Grid(alignment: .leading, horizontalSpacing: 16, verticalSpacing: 8) {
                                 ForEach(section.rows) { row in
                                     GridRow {
-                                        Text(row.label).foregroundStyle(.secondary)
+                                        Text(row.label)
+                                            .foregroundStyle(theme.secondaryLabel)
                                         Button {
                                             ClipboardService.copy(row.value)
                                             flash("已复制：\(row.label)")
                                         } label: {
                                             Text(row.value)
                                                 .font(.system(.body, design: .monospaced).bold())
+                                                .foregroundStyle(.white)
                                                 .multilineTextAlignment(.leading)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
@@ -66,9 +70,6 @@ struct ResultPanelView: View {
                                     }
                                 }
                             }
-                        } label: {
-                            Text(section.title)
-                                .font(.subheadline.weight(.semibold))
                         }
                     }
                 }
@@ -83,6 +84,34 @@ struct ResultPanelView: View {
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(1.4))
             feedback = ""
+        }
+    }
+}
+
+private struct ResultSectionContainer<Content: View>: View {
+    let title: String
+    let theme: CalculatorTheme
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        let chrome = theme.resultSection
+
+        VStack(alignment: .leading, spacing: chrome.headerSpacing) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
+
+            content
+        }
+        .padding(.horizontal, chrome.horizontalPadding)
+        .padding(.vertical, chrome.verticalPadding)
+        .background(
+            theme.chromeElevated.opacity(chrome.fillOpacity),
+            in: RoundedRectangle(cornerRadius: chrome.cornerRadius, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: chrome.cornerRadius, style: .continuous)
+                .stroke(.white.opacity(chrome.strokeOpacity), lineWidth: 1)
         }
     }
 }

@@ -80,6 +80,8 @@ struct BinaryBitGridLayout {
 }
 
 struct BinaryBitGridView: View {
+    private let theme = CalculatorTheme.defaultDark
+
     var binary32: String
     var onToggle: (Int) -> Void
 
@@ -89,7 +91,9 @@ struct BinaryBitGridView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("32 位二进制").font(.headline)
+            Text("32 位二进制")
+                .font(.headline)
+                .foregroundStyle(.white)
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(layout.rows.enumerated()), id: \.element.id) { rowIndex, row in
                     HStack(alignment: .top, spacing: 0) {
@@ -97,19 +101,30 @@ struct BinaryBitGridView: View {
                             VStack(alignment: .leading, spacing: layout.verticalDensity.groupSpacing) {
                                 HStack(spacing: 3) {
                                     ForEach(group.cells) { cell in
-                                        Button(String(cell.character)) {
+                                        Button {
                                             onToggle(cell.bitIndex)
+                                        } label: {
+                                            Text(String(cell.character))
+                                                .font(.system(size: 12, weight: .semibold, design: .monospaced))
+                                                .frame(width: 22, height: 22)
+                                                .foregroundStyle(cell.character == "1" ? .white : theme.secondaryLabel)
+                                                .background(
+                                                    cellBackground(for: cell),
+                                                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                                )
+                                                .overlay {
+                                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                                        .stroke(borderColor(for: cell), lineWidth: 1)
+                                                }
                                         }
-                                        .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                                        .frame(width: 22, height: 22)
-                                        .buttonStyle(.bordered)
+                                        .buttonStyle(.plain)
                                         .controlSize(.small)
                                     }
                                 }
 
                                 Text(group.markerLabel)
                                     .font(.system(size: layout.verticalDensity.markerFontSize, weight: .semibold, design: .monospaced))
-                                    .foregroundStyle(.tertiary)
+                                    .foregroundStyle(theme.secondaryLabel)
                                     .padding(.leading, 2)
                             }
                             .padding(.horizontal, layout.verticalDensity.groupHorizontalPadding)
@@ -117,6 +132,7 @@ struct BinaryBitGridView: View {
 
                             if groupIndex < row.groups.count - 1 {
                                 Divider()
+                                    .overlay(theme.divider)
                                     .padding(.vertical, layout.verticalDensity.dividerInset)
                             }
                         }
@@ -124,6 +140,7 @@ struct BinaryBitGridView: View {
 
                     if rowIndex < layout.rows.count - 1 {
                         Divider()
+                            .overlay(theme.divider)
                     }
                 }
             }
@@ -131,5 +148,21 @@ struct BinaryBitGridView: View {
         }
         .fixedSize(horizontal: true, vertical: layout.heightBehavior.fixesVerticalSize)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func cellBackground(for cell: BinaryBitGridLayout.Cell) -> Color {
+        if cell.character == "1" {
+            return theme.accentMode.tint.opacity(0.42)
+        }
+
+        return theme.chromeElevated.opacity(0.9)
+    }
+
+    private func borderColor(for cell: BinaryBitGridLayout.Cell) -> Color {
+        if cell.character == "1" {
+            return theme.accentMode.tint.opacity(0.78)
+        }
+
+        return .white.opacity(0.10)
     }
 }

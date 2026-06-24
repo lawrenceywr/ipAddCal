@@ -2,6 +2,8 @@ import SwiftUI
 import IPCalculatorFeatures
 
 struct HistoryPopoverView: View {
+    private let theme = CalculatorTheme.defaultDark
+
     let entries: [HistoryEntry]
     let onRestore: (HistoryEntry) -> Void
 
@@ -11,10 +13,11 @@ struct HistoryPopoverView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("历史记录")
                 .font(.headline)
+                .foregroundStyle(.white)
 
             if entries.isEmpty {
                 Text("暂无历史记录")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(theme.secondaryLabel)
                     .frame(maxWidth: .infinity, minHeight: 120, alignment: .center)
             } else {
                 ScrollView {
@@ -23,11 +26,12 @@ struct HistoryPopoverView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(entry.title)
                                     .font(.system(.body, design: .monospaced).bold())
+                                    .foregroundStyle(.white)
                                     .textSelection(.enabled)
 
                                 Text(entry.subtitle)
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(theme.secondaryLabel)
 
                                 HStack(spacing: 8) {
                                     Button(copiedEntryID == entry.id ? "已复制" : "复制") {
@@ -44,6 +48,7 @@ struct HistoryPopoverView: View {
 
                             if entry.id != entries.last?.id {
                                 Divider()
+                                    .overlay(theme.divider)
                             }
                         }
                     }

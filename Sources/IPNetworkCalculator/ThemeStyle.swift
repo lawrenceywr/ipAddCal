@@ -38,6 +38,16 @@ struct CalculatorFieldChrome: Equatable {
     let invalidStrokeWidth: CGFloat
 }
 
+struct CalculatorSectionChrome: Equatable {
+    let cornerRadius: CGFloat
+    let horizontalPadding: CGFloat
+    let verticalPadding: CGFloat
+    let rowSpacing: CGFloat
+    let headerSpacing: CGFloat
+    let fillOpacity: Double
+    let strokeOpacity: Double
+}
+
 struct CalculatorTheme: Equatable {
     let enforcesDarkAppearance: Bool
     let accentMode: ThemeAccentMode
@@ -101,6 +111,18 @@ extension CalculatorTheme {
             strokeOpacity: 0.14,
             strokeWidth: 1,
             invalidStrokeWidth: 1.3
+        )
+    }
+
+    var resultSection: CalculatorSectionChrome {
+        CalculatorSectionChrome(
+            cornerRadius: 16,
+            horizontalPadding: 14,
+            verticalPadding: 12,
+            rowSpacing: 12,
+            headerSpacing: 8,
+            fillOpacity: 0.76,
+            strokeOpacity: 0.12
         )
     }
 }

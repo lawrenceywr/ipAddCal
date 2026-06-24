@@ -26,12 +26,29 @@ private struct ChromeBackgroundModifier: ViewModifier {
 
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
+        let surface = theme.workspaceSurface
+
         content
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .background(
+                theme.contentBase.opacity(surface.fillOpacity),
+                in: RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+            )
             .overlay {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
             }
+            .overlay(alignment: .top) {
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .mask {
+                        LinearGradient(
+                            colors: [.white, .white.opacity(0)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+            }
+            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 18, y: 10)
     }
 }
 
@@ -88,9 +105,29 @@ private struct CalculatorFieldModifier: ViewModifier {
 
 private struct PopoverSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
+        let surface = theme.popoverSurface
+
         content
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .glassEffect()
+            .background(
+                theme.chromeElevated.opacity(surface.fillOpacity),
+                in: RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
+            }
+            .overlay(alignment: .top) {
+                RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
+                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .mask {
+                        LinearGradient(
+                            colors: [.white, .white.opacity(0)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    }
+            }
+            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 16, y: 8)
     }
 }
 
