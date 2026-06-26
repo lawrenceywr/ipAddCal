@@ -24,19 +24,16 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(theme.windowBase.gradient)
             .calculatorChromeBackground(fillOpacity: theme.chrome.detailFillOpacity)
+            .navigationTitle(workbench.windowTitle)
             .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(workbench.windowTitle)
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.94))
-                }
-
                 ToolbarItem {
-                    Button("历史") {
+                    Button {
                         workbench.navigation.isHistoryPresented.toggle()
+                    } label: {
+                        Text("历史")
                     }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
+                    .buttonStyle(.plain)
+                    .calculatorHistoryButtonChrome()
                     .popover(isPresented: $workbench.navigation.isHistoryPresented) {
                         HistoryPopoverView(
                             entries: workbench.history.entries,

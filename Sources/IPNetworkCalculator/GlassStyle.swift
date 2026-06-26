@@ -24,6 +24,21 @@ private struct ChromeBackgroundModifier: ViewModifier {
     }
 }
 
+private struct HistoryButtonChromeModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.headline.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.94))
+            .padding(.horizontal, theme.chrome.historyButtonHorizontalPadding)
+            .padding(.vertical, theme.chrome.historyButtonVerticalPadding)
+            .background(theme.chromeBase.opacity(0.62), in: Capsule())
+            .overlay {
+                Capsule()
+                    .stroke(.white.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
+            }
+    }
+}
+
 private struct WorkspaceSurfaceModifier: ViewModifier {
     func body(content: Content) -> some View {
         let surface = theme.workspaceSurface
@@ -150,5 +165,9 @@ extension View {
 
     func calculatorFieldChrome(invalid: Bool = false) -> some View {
         modifier(CalculatorFieldModifier(invalid: invalid))
+    }
+
+    func calculatorHistoryButtonChrome() -> some View {
+        modifier(HistoryButtonChromeModifier())
     }
 }

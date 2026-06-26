@@ -7,7 +7,7 @@ func defaultDarkThemeLocksConfirmedVisualDecisions() {
     let theme = CalculatorTheme.defaultDark
 
     #expect(theme.enforcesDarkAppearance == true)
-    #expect(theme.accentMode == .macOSBlue)
+    #expect(theme.accentMode == .calculatorOrange)
     #expect(theme.glassIntensity == .elevated)
     #expect(theme.surfaceContrast == .clearBoundaries)
 }
@@ -39,6 +39,18 @@ func defaultDarkThemeDefinesChromeHierarchy() {
     #expect(theme.chrome.toolbarLineOpacity == 0.06)
     #expect(theme.chrome.detailFillOpacity < theme.chrome.sidebarFillOpacity)
     #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
+}
+
+@Test
+func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
+    let chrome = CalculatorTheme.defaultDark.chrome
+
+    #expect(chrome.sidebarFloatingCornerRadius == 0)
+    #expect(chrome.sidebarRowCornerRadius == 10)
+    #expect(chrome.titleItemBorderOpacity == 0)
+    #expect(chrome.historyButtonHorizontalPadding == 16)
+    #expect(chrome.historyButtonVerticalPadding == 8)
+    #expect(chrome.historyButtonStrokeOpacity == 0.14)
 }
 
 @Test
@@ -101,4 +113,32 @@ func darkThemeViewsUseSemanticErrorColor() throws {
     }
 
     #expect(directSystemRedUsages.isEmpty)
+}
+
+@Test
+func darkThemeSidebarUsesIntegratedCustomChrome() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/SidebarNavigationView.swift")
+
+    #expect(!source.contains("List("))
+    #expect(!source.contains(".listStyle(.sidebar)"))
+}
+
+@Test
+func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(!source.contains("placement: .principal"))
+    #expect(source.contains("calculatorHistoryButtonChrome"))
+}
+
+private func sourceText(relativePath: String) throws -> String {
+    let packageRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+
+    return try String(
+        contentsOf: packageRoot.appending(path: relativePath),
+        encoding: .utf8
+    )
 }
