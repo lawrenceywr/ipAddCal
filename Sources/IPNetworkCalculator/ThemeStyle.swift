@@ -32,6 +32,8 @@ struct CalculatorChromeStyle: Equatable {
     let historyButtonHorizontalPadding: CGFloat
     let historyButtonVerticalPadding: CGFloat
     let historyButtonStrokeOpacity: Double
+    let integratedSidebarWidth: CGFloat
+    let integratedSidebarDividerOpacity: Double
 }
 
 struct CalculatorFieldChrome: Equatable {
@@ -110,7 +112,9 @@ extension CalculatorTheme {
             titleItemBorderOpacity: 0,
             historyButtonHorizontalPadding: 16,
             historyButtonVerticalPadding: 8,
-            historyButtonStrokeOpacity: 0.14
+            historyButtonStrokeOpacity: 0.14,
+            integratedSidebarWidth: 168,
+            integratedSidebarDividerOpacity: 0.10
         )
     }
 

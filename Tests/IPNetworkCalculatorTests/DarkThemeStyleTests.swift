@@ -51,6 +51,8 @@ func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
     #expect(chrome.historyButtonHorizontalPadding == 16)
     #expect(chrome.historyButtonVerticalPadding == 8)
     #expect(chrome.historyButtonStrokeOpacity == 0.14)
+    #expect(chrome.integratedSidebarWidth == 168)
+    #expect(chrome.integratedSidebarDividerOpacity == 0.10)
 }
 
 @Test
@@ -124,10 +126,22 @@ func darkThemeSidebarUsesIntegratedCustomChrome() throws {
 }
 
 @Test
+func darkThemeRootLayoutDoesNotUseSystemSplitSidebarChrome() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(!source.contains("NavigationSplitView"))
+    #expect(source.contains("HStack(spacing: 0)"))
+    #expect(source.contains("integratedSidebarWidth"))
+    #expect(source.contains("integratedSidebarDividerOpacity"))
+}
+
+@Test
 func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
     #expect(!source.contains("placement: .principal"))
+    #expect(!source.contains("placement: .navigation"))
+    #expect(!source.contains(".navigationTitle("))
     #expect(source.contains("calculatorHistoryButtonChrome"))
 }
 
@@ -135,10 +149,7 @@ func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
 func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
-    #expect(source.contains("""
-                        Text("历史")
-                            .calculatorHistoryButtonChrome()
-"""))
+    #expect(source.contains("Text(\"历史\")\n                        .calculatorHistoryButtonChrome()"))
     #expect(!source.contains("""
                     .buttonStyle(.plain)
                     .calculatorHistoryButtonChrome()
