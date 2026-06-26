@@ -24,6 +24,7 @@ struct SidebarNavigationView: View {
                                 style: .continuous
                             )
                         )
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }

@@ -126,6 +126,13 @@ func darkThemeSidebarUsesIntegratedCustomChrome() throws {
 }
 
 @Test
+func darkThemeSidebarRowsExposeFullWidthHitTargets() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/SidebarNavigationView.swift")
+
+    #expect(source.contains(".contentShape(Rectangle())"))
+}
+
+@Test
 func darkThemeRootLayoutDoesNotUseSystemSplitSidebarChrome() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
