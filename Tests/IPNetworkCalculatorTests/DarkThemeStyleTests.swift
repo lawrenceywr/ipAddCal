@@ -131,6 +131,20 @@ func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
     #expect(source.contains("calculatorHistoryButtonChrome"))
 }
 
+@Test
+func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(source.contains("""
+                        Text("历史")
+                            .calculatorHistoryButtonChrome()
+"""))
+    #expect(!source.contains("""
+                    .buttonStyle(.plain)
+                    .calculatorHistoryButtonChrome()
+"""))
+}
+
 private func sourceText(relativePath: String) throws -> String {
     let packageRoot = URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent()

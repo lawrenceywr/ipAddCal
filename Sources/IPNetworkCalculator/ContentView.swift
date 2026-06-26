@@ -31,9 +31,9 @@ struct ContentView: View {
                         workbench.navigation.isHistoryPresented.toggle()
                     } label: {
                         Text("历史")
+                            .calculatorHistoryButtonChrome()
                     }
                     .buttonStyle(.plain)
-                    .calculatorHistoryButtonChrome()
                     .popover(isPresented: $workbench.navigation.isHistoryPresented) {
                         HistoryPopoverView(
                             entries: workbench.history.entries,
