@@ -41,6 +41,16 @@ func networkWorkspaceBuildsGroupedRowsAndHistoryEntry() {
 
 @MainActor
 @Test
+func networkWorkspaceNormalizesChinesePunctuationAsTextChanges() {
+    let viewModel = NetworkWorkspaceViewModel()
+
+    viewModel.updateNetworkInput("１９２。１６８。１。１０、２４")
+
+    #expect(viewModel.networkInput == "192.168.1.10/24")
+}
+
+@MainActor
+@Test
 func networkWorkspaceRestoreResetsStaleState() {
     let viewModel = NetworkWorkspaceViewModel()
     viewModel.resultSections = [

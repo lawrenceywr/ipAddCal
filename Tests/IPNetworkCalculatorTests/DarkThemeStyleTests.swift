@@ -163,6 +163,20 @@ func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
 """))
 }
 
+@Test
+func ipInputFieldsUseNormalizingTextFieldForPunctuationAndReturnKey() throws {
+    let networkSource = try sourceText(relativePath: "Sources/IPNetworkCalculator/NetworkWorkspaceView.swift")
+    let translationSource = try sourceText(relativePath: "Sources/IPNetworkCalculator/TranslationWorkspaceView.swift")
+    let normalizingSource = (try? sourceText(relativePath: "Sources/IPNetworkCalculator/NormalizingTextField.swift")) ?? ""
+
+    #expect(networkSource.contains("NormalizingTextField("))
+    #expect(translationSource.contains("NormalizingTextField("))
+    #expect(normalizingSource.contains("InputNormalizer.normalizeFieldText"))
+    #expect(normalizingSource.contains("controlTextDidChange"))
+    #expect(normalizingSource.contains("insertNewline"))
+    #expect(normalizingSource.contains("onSubmit()"))
+}
+
 private func sourceText(relativePath: String) throws -> String {
     let packageRoot = URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent()

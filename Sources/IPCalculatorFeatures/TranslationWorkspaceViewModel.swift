@@ -23,6 +23,22 @@ public final class TranslationWorkspaceViewModel {
 
     public init() {}
 
+    public func updateIPv4Input(_ text: String) {
+        ipv4Input = InputNormalizer.normalizeFieldText(text)
+    }
+
+    public func updateIPv6PrefixInput(_ text: String) {
+        ipv6PrefixInput = InputNormalizer.normalizeFieldText(text)
+    }
+
+    public func updateIPv6Input(_ text: String) {
+        ipv6Input = InputNormalizer.normalizeFieldText(text)
+    }
+
+    public func updateIPv6ReversePrefixInput(_ text: String) {
+        ipv6ReversePrefixInput = InputNormalizer.normalizeFieldText(text)
+    }
+
     @discardableResult
     public func calculate() -> HistoryEntry? {
         resetResultState()

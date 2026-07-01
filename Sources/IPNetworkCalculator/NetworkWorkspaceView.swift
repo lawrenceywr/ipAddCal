@@ -1,5 +1,4 @@
 import SwiftUI
-import IPCalculatorCore
 import IPCalculatorFeatures
 
 struct NetworkWorkspaceView: View {
@@ -12,7 +11,10 @@ struct NetworkWorkspaceView: View {
                 field(
                     "地址/前缀或掩码",
                     example: "192.168.1.10/24、10.0.0.7/255.255.255.248 或 2001:db8::1/126",
-                    text: $viewModel.networkInput
+                    text: Binding(
+                        get: { viewModel.networkInput },
+                        set: { newValue in viewModel.updateNetworkInput(newValue) }
+                    )
                 )
 
                 HStack {
@@ -46,19 +48,11 @@ struct NetworkWorkspaceView: View {
             Text(example)
                 .font(.footnote)
                 .foregroundStyle(CalculatorTheme.defaultDark.secondaryLabel)
-            TextField(title, text: normalizedBinding(text))
+            NormalizingTextField(title, text: text, onSubmit: onCalculate)
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.plain)
                 .calculatorFieldChrome()
         }
     }
 
-    private func normalizedBinding(_ text: Binding<String>) -> Binding<String> {
-        Binding(
-            get: { text.wrappedValue },
-            set: { newValue in
-                text.wrappedValue = InputNormalizer.normalizeFieldText(newValue)
-            }
-        )
-    }
 }
