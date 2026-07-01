@@ -15,6 +15,10 @@ public final class NetworkWorkspaceViewModel {
 
     public init() {}
 
+    public func updateNetworkInput(_ text: String) {
+        networkInput = InputNormalizer.normalizeFieldText(text)
+    }
+
     @discardableResult
     public func calculate() -> HistoryEntry? {
         resetResultState()

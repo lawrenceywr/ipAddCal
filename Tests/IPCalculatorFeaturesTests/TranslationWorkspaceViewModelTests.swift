@@ -64,6 +64,22 @@ func translationWorkspaceBuildsIpv6ToIpv4ResultAndHistoryEntry() {
 
 @MainActor
 @Test
+func translationWorkspaceNormalizesChinesePunctuationAsTextChanges() {
+    let viewModel = TranslationWorkspaceViewModel()
+
+    viewModel.updateIPv4Input("４８。２３５。２４。０、３０")
+    viewModel.updateIPv6PrefixInput("２００１：ｄｂ８：：")
+    viewModel.updateIPv6Input("２００１：ｄｂ８：：３０ｅｂ：１８００、１２６")
+    viewModel.updateIPv6ReversePrefixInput("２００１：ｄｂ８：：")
+
+    #expect(viewModel.ipv4Input == "48.235.24.0/30")
+    #expect(viewModel.ipv6PrefixInput == "2001:db8::")
+    #expect(viewModel.ipv6Input == "2001:db8::30eb:1800/126")
+    #expect(viewModel.ipv6ReversePrefixInput == "2001:db8::")
+}
+
+@MainActor
+@Test
 func translationWorkspaceRestoreSupportsIpv4ToIpv6Direction() {
     let viewModel = TranslationWorkspaceViewModel()
     viewModel.resultSections = [

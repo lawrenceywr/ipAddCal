@@ -1,5 +1,4 @@
 import SwiftUI
-import IPCalculatorCore
 import IPCalculatorFeatures
 
 struct TranslationWorkspaceView: View {
@@ -14,20 +13,40 @@ struct TranslationWorkspaceView: View {
                 switch viewModel.direction {
                 case .ipv4ToIPv6:
                     HStack(spacing: WorkspaceChrome.controlSpacing) {
-                        field("IPv4 网段", example: "48.235.24.0/30", text: $viewModel.ipv4Input)
-                        field("IPv6 前 96 位", example: "2001:db8::", text: $viewModel.ipv6PrefixInput)
+                        field(
+                            "IPv4 网段",
+                            example: "48.235.24.0/30",
+                            text: Binding(
+                                get: { viewModel.ipv4Input },
+                                set: { newValue in viewModel.updateIPv4Input(newValue) }
+                            )
+                        )
+                        field(
+                            "IPv6 前 96 位",
+                            example: "2001:db8::",
+                            text: Binding(
+                                get: { viewModel.ipv6PrefixInput },
+                                set: { newValue in viewModel.updateIPv6PrefixInput(newValue) }
+                            )
+                        )
                     }
                 case .ipv6ToIPv4:
                     HStack(spacing: WorkspaceChrome.controlSpacing) {
                         field(
                             "IPv6 地址/网段",
                             example: "2001:db8::30eb:1800/126",
-                            text: $viewModel.ipv6Input
+                            text: Binding(
+                                get: { viewModel.ipv6Input },
+                                set: { newValue in viewModel.updateIPv6Input(newValue) }
+                            )
                         )
                         field(
                             "IPv6 /96 前缀（可选）",
                             example: "2001:db8::",
-                            text: $viewModel.ipv6ReversePrefixInput
+                            text: Binding(
+                                get: { viewModel.ipv6ReversePrefixInput },
+                                set: { newValue in viewModel.updateIPv6ReversePrefixInput(newValue) }
+                            )
                         )
                     }
                 }
@@ -63,7 +82,7 @@ struct TranslationWorkspaceView: View {
             Text(example)
                 .font(.footnote)
                 .foregroundStyle(CalculatorTheme.defaultDark.secondaryLabel)
-            TextField(title, text: normalizedBinding(text))
+            NormalizingTextField(title, text: text, onSubmit: onCalculate)
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.plain)
                 .calculatorFieldChrome()
@@ -71,12 +90,4 @@ struct TranslationWorkspaceView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func normalizedBinding(_ text: Binding<String>) -> Binding<String> {
-        Binding(
-            get: { text.wrappedValue },
-            set: { newValue in
-                text.wrappedValue = InputNormalizer.normalizeFieldText(newValue)
-            }
-        )
-    }
 }

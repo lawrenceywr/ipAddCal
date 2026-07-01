@@ -8,45 +8,53 @@ struct ContentView: View {
     var body: some View {
         @Bindable var workbench = workbench
 
-        NavigationSplitView {
+        HStack(spacing: 0) {
             SidebarNavigationView(selection: $workbench.navigation.selectedWorkspace)
-                .calculatorChromeBackground()
-        } detail: {
-            Group {
-                switch workbench.navigation.selectedWorkspace {
-                case .ipCalculation:
-                    IPWorkspaceView(workbench: workbench)
-                case .baseConversion:
-                    BaseConversionView(viewModel: workbench.baseConversionWorkspace)
-                }
-            }
-            .padding(WorkspaceChrome.contentPadding)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .background(theme.windowBase.gradient)
-            .calculatorChromeBackground(fillOpacity: theme.chrome.detailFillOpacity)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(workbench.windowTitle)
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.94))
-                }
+                .frame(width: theme.chrome.integratedSidebarWidth)
+                .background(theme.chromeBase.opacity(theme.chrome.sidebarFillOpacity))
 
-                ToolbarItem {
-                    Button("历史") {
-                        workbench.navigation.isHistoryPresented.toggle()
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .popover(isPresented: $workbench.navigation.isHistoryPresented) {
-                        HistoryPopoverView(
-                            entries: workbench.history.entries,
-                            onRestore: { entry in
-                                workbench.restore(entry)
-                            }
-                        )
+            Rectangle()
+                .fill(.white.opacity(theme.chrome.integratedSidebarDividerOpacity))
+                .frame(width: 1)
+
+            VStack(spacing: 0) {
+                Group {
+                    switch workbench.navigation.selectedWorkspace {
+                    case .ipCalculation:
+                        IPWorkspaceView(workbench: workbench)
+                    case .baseConversion:
+                        BaseConversionView(viewModel: workbench.baseConversionWorkspace)
                     }
                 }
+                .padding(WorkspaceChrome.contentPadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
+            .background(theme.windowBase.gradient)
+        }
+        .background(theme.windowBase.gradient)
+        .toolbar {
+            ToolbarItem {
+                Button {
+                    workbench.navigation.isHistoryPresented.toggle()
+                } label: {
+                    Text("历史")
+                        .calculatorHistoryButtonChrome()
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $workbench.navigation.isHistoryPresented) {
+                    HistoryPopoverView(
+                        entries: workbench.history.entries,
+                        onRestore: { entry in
+                            workbench.restore(entry)
+                        }
+                    )
+                }
+            }
+        }
+        .overlay(alignment: .top) {
+            Rectangle()
+                .fill(.white.opacity(theme.chrome.toolbarLineOpacity))
+                .frame(height: 1)
         }
         .toolbarBackground(theme.chromeBase.opacity(theme.chrome.detailFillOpacity), for: .windowToolbar)
         .toolbarBackground(.visible, for: .windowToolbar)

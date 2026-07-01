@@ -7,7 +7,7 @@ func defaultDarkThemeLocksConfirmedVisualDecisions() {
     let theme = CalculatorTheme.defaultDark
 
     #expect(theme.enforcesDarkAppearance == true)
-    #expect(theme.accentMode == .macOSBlue)
+    #expect(theme.accentMode == .calculatorOrange)
     #expect(theme.glassIntensity == .elevated)
     #expect(theme.surfaceContrast == .clearBoundaries)
 }
@@ -39,6 +39,20 @@ func defaultDarkThemeDefinesChromeHierarchy() {
     #expect(theme.chrome.toolbarLineOpacity == 0.06)
     #expect(theme.chrome.detailFillOpacity < theme.chrome.sidebarFillOpacity)
     #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
+}
+
+@Test
+func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
+    let chrome = CalculatorTheme.defaultDark.chrome
+
+    #expect(chrome.sidebarFloatingCornerRadius == 0)
+    #expect(chrome.sidebarRowCornerRadius == 10)
+    #expect(chrome.titleItemBorderOpacity == 0)
+    #expect(chrome.historyButtonHorizontalPadding == 16)
+    #expect(chrome.historyButtonVerticalPadding == 8)
+    #expect(chrome.historyButtonStrokeOpacity == 0.14)
+    #expect(chrome.integratedSidebarWidth == 168)
+    #expect(chrome.integratedSidebarDividerOpacity == 0.10)
 }
 
 @Test
@@ -101,4 +115,76 @@ func darkThemeViewsUseSemanticErrorColor() throws {
     }
 
     #expect(directSystemRedUsages.isEmpty)
+}
+
+@Test
+func darkThemeSidebarUsesIntegratedCustomChrome() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/SidebarNavigationView.swift")
+
+    #expect(!source.contains("List("))
+    #expect(!source.contains(".listStyle(.sidebar)"))
+}
+
+@Test
+func darkThemeSidebarRowsExposeFullWidthHitTargets() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/SidebarNavigationView.swift")
+
+    #expect(source.contains(".contentShape(Rectangle())"))
+}
+
+@Test
+func darkThemeRootLayoutDoesNotUseSystemSplitSidebarChrome() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(!source.contains("NavigationSplitView"))
+    #expect(source.contains("HStack(spacing: 0)"))
+    #expect(source.contains("integratedSidebarWidth"))
+    #expect(source.contains("integratedSidebarDividerOpacity"))
+}
+
+@Test
+func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(!source.contains("placement: .principal"))
+    #expect(!source.contains("placement: .navigation"))
+    #expect(!source.contains(".navigationTitle("))
+    #expect(source.contains("calculatorHistoryButtonChrome"))
+}
+
+@Test
+func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(source.contains("Text(\"历史\")\n                        .calculatorHistoryButtonChrome()"))
+    #expect(!source.contains("""
+                    .buttonStyle(.plain)
+                    .calculatorHistoryButtonChrome()
+"""))
+}
+
+@Test
+func ipInputFieldsUseNormalizingTextFieldForPunctuationAndReturnKey() throws {
+    let networkSource = try sourceText(relativePath: "Sources/IPNetworkCalculator/NetworkWorkspaceView.swift")
+    let translationSource = try sourceText(relativePath: "Sources/IPNetworkCalculator/TranslationWorkspaceView.swift")
+    let normalizingSource = (try? sourceText(relativePath: "Sources/IPNetworkCalculator/NormalizingTextField.swift")) ?? ""
+
+    #expect(networkSource.contains("NormalizingTextField("))
+    #expect(translationSource.contains("NormalizingTextField("))
+    #expect(normalizingSource.contains("InputNormalizer.normalizeFieldText"))
+    #expect(normalizingSource.contains("controlTextDidChange"))
+    #expect(normalizingSource.contains("insertNewline"))
+    #expect(normalizingSource.contains("onSubmit()"))
+}
+
+private func sourceText(relativePath: String) throws -> String {
+    let packageRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+
+    return try String(
+        contentsOf: packageRoot.appending(path: relativePath),
+        encoding: .utf8
+    )
 }

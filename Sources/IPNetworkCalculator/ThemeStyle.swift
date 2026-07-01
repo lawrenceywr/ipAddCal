@@ -1,9 +1,9 @@
 import SwiftUI
 
 enum ThemeAccentMode: Equatable {
-    case macOSBlue
+    case calculatorOrange
 
-    var tint: Color { .blue }
+    var tint: Color { Color(red: 1.0, green: 0.584, blue: 0.0) }
 }
 
 enum ThemeGlassIntensity: Equatable {
@@ -26,6 +26,14 @@ struct CalculatorChromeStyle: Equatable {
     let sidebarFillOpacity: Double
     let detailFillOpacity: Double
     let toolbarLineOpacity: Double
+    let sidebarFloatingCornerRadius: CGFloat
+    let sidebarRowCornerRadius: CGFloat
+    let titleItemBorderOpacity: Double
+    let historyButtonHorizontalPadding: CGFloat
+    let historyButtonVerticalPadding: CGFloat
+    let historyButtonStrokeOpacity: Double
+    let integratedSidebarWidth: CGFloat
+    let integratedSidebarDividerOpacity: Double
 }
 
 struct CalculatorFieldChrome: Equatable {
@@ -66,7 +74,7 @@ struct CalculatorTheme: Equatable {
 
     static let defaultDark = CalculatorTheme(
         enforcesDarkAppearance: true,
-        accentMode: .macOSBlue,
+        accentMode: .calculatorOrange,
         glassIntensity: .elevated,
         surfaceContrast: .clearBoundaries,
         workspaceSurface: CalculatorSurfaceStyle(
@@ -98,7 +106,15 @@ extension CalculatorTheme {
         CalculatorChromeStyle(
             sidebarFillOpacity: 0.96,
             detailFillOpacity: 0.92,
-            toolbarLineOpacity: 0.06
+            toolbarLineOpacity: 0.06,
+            sidebarFloatingCornerRadius: 0,
+            sidebarRowCornerRadius: 10,
+            titleItemBorderOpacity: 0,
+            historyButtonHorizontalPadding: 16,
+            historyButtonVerticalPadding: 8,
+            historyButtonStrokeOpacity: 0.14,
+            integratedSidebarWidth: 168,
+            integratedSidebarDividerOpacity: 0.10
         )
     }
 
