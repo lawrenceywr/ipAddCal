@@ -3,7 +3,9 @@ import IPCalculatorFeatures
 
 struct ContentView: View {
     @State private var workbench = CalculatorWorkbenchViewModel()
-    private let theme = CalculatorTheme.defaultDark
+    @Environment(\.calculatorTheme) private var theme
+    let appearance: CalculatorAppearance
+    let onToggleAppearance: () -> Void
 
     var body: some View {
         @Bindable var workbench = workbench
@@ -14,7 +16,7 @@ struct ContentView: View {
                 .background(theme.chromeBase.opacity(theme.chrome.sidebarFillOpacity))
 
             Rectangle()
-                .fill(.white.opacity(theme.chrome.integratedSidebarDividerOpacity))
+                .fill(theme.stroke.opacity(theme.chrome.integratedSidebarDividerOpacity))
                 .frame(width: 1)
 
             VStack(spacing: 0) {
@@ -33,7 +35,17 @@ struct ContentView: View {
         }
         .background(theme.windowBase.gradient)
         .toolbar {
-            ToolbarItem {
+            ToolbarItemGroup {
+                Button {
+                    onToggleAppearance()
+                } label: {
+                    Image(systemName: appearance.toggleIconSystemName)
+                        .calculatorToolbarIconButtonChrome()
+                }
+                .buttonStyle(.plain)
+                .help(appearance.toggleAccessibilityLabel)
+                .accessibilityLabel(appearance.toggleAccessibilityLabel)
+
                 Button {
                     workbench.navigation.isHistoryPresented.toggle()
                 } label: {
@@ -53,11 +65,11 @@ struct ContentView: View {
         }
         .overlay(alignment: .top) {
             Rectangle()
-                .fill(.white.opacity(theme.chrome.toolbarLineOpacity))
+                .fill(theme.stroke.opacity(theme.chrome.toolbarLineOpacity))
                 .frame(height: 1)
         }
         .toolbarBackground(theme.chromeBase.opacity(theme.chrome.detailFillOpacity), for: .windowToolbar)
         .toolbarBackground(.visible, for: .windowToolbar)
-        .toolbarColorScheme(.dark, for: .windowToolbar)
+        .toolbarColorScheme(appearance.colorScheme, for: .windowToolbar)
     }
 }

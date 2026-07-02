@@ -2,7 +2,7 @@ import SwiftUI
 import IPCalculatorFeatures
 
 struct HistoryPopoverView: View {
-    private let theme = CalculatorTheme.defaultDark
+    @Environment(\.calculatorTheme) private var theme
 
     let entries: [HistoryEntry]
     let onRestore: (HistoryEntry) -> Void
@@ -13,7 +13,7 @@ struct HistoryPopoverView: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("历史记录")
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.primaryLabel)
 
             if entries.isEmpty {
                 Text("暂无历史记录")
@@ -26,7 +26,7 @@ struct HistoryPopoverView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 Text(entry.title)
                                     .font(.system(.body, design: .monospaced).bold())
-                                    .foregroundStyle(.white)
+                                    .foregroundStyle(theme.primaryLabel)
                                     .textSelection(.enabled)
 
                                 Text(entry.subtitle)

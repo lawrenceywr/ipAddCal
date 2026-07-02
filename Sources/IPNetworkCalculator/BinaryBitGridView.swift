@@ -80,7 +80,7 @@ struct BinaryBitGridLayout {
 }
 
 struct BinaryBitGridView: View {
-    private let theme = CalculatorTheme.defaultDark
+    @Environment(\.calculatorTheme) private var theme
 
     var binary32: String
     var onToggle: (Int) -> Void
@@ -93,7 +93,7 @@ struct BinaryBitGridView: View {
         VStack(alignment: .leading, spacing: 10) {
             Text("32 位二进制")
                 .font(.headline)
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.primaryLabel)
             VStack(alignment: .leading, spacing: 0) {
                 ForEach(Array(layout.rows.enumerated()), id: \.element.id) { rowIndex, row in
                     HStack(alignment: .top, spacing: 0) {
@@ -107,7 +107,7 @@ struct BinaryBitGridView: View {
                                             Text(String(cell.character))
                                                 .font(.system(size: 12, weight: .semibold, design: .monospaced))
                                                 .frame(width: 22, height: 22)
-                                                .foregroundStyle(cell.character == "1" ? .white : theme.secondaryLabel)
+                                                .foregroundStyle(cell.character == "1" ? Color.white.opacity(0.96) : theme.secondaryLabel)
                                                 .background(
                                                     cellBackground(for: cell),
                                                     in: RoundedRectangle(cornerRadius: 6, style: .continuous)
@@ -163,6 +163,6 @@ struct BinaryBitGridView: View {
             return theme.accentMode.tint.opacity(0.78)
         }
 
-        return .white.opacity(0.10)
+        return theme.stroke.opacity(0.10)
     }
 }
