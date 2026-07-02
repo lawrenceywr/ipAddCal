@@ -3,6 +3,7 @@ import IPCalculatorFeatures
 
 struct TranslationDirectionPickerView: View {
     @Binding var selection: TranslationDirection
+    @Environment(\.calculatorTheme) private var theme
 
     var body: some View {
         Picker("互转方向", selection: $selection) {
@@ -12,6 +13,6 @@ struct TranslationDirectionPickerView: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.large)
-        .tint(CalculatorTheme.defaultDark.accentMode.tint)
+        .tint(theme.accentMode.tint)
     }
 }

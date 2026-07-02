@@ -2,7 +2,7 @@ import SwiftUI
 import IPCalculatorFeatures
 
 struct ResultPanelView: View {
-    private let theme = CalculatorTheme.defaultDark
+    @Environment(\.calculatorTheme) private var theme
 
     let statusText: String
     let errorMessage: String?
@@ -18,7 +18,7 @@ struct ResultPanelView: View {
             HStack {
                 Text(feedback.isEmpty ? statusText : feedback)
                     .font(.headline)
-                    .foregroundStyle(errorMessage == nil ? .white : theme.error)
+                    .foregroundStyle(errorMessage == nil ? theme.primaryLabel : theme.error)
                 Spacer()
                 if !primaryCopyText.isEmpty {
                     Button("复制 \(primaryCopyLabel)") {
@@ -55,7 +55,7 @@ struct ResultPanelView: View {
                                         } label: {
                                             Text(row.value)
                                                 .font(.system(.body, design: .monospaced).bold())
-                                                .foregroundStyle(.white)
+                                                .foregroundStyle(theme.primaryLabel)
                                                 .multilineTextAlignment(.leading)
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
@@ -99,7 +99,7 @@ private struct ResultSectionContainer<Content: View>: View {
         VStack(alignment: .leading, spacing: chrome.headerSpacing) {
             Text(title)
                 .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.white)
+                .foregroundStyle(theme.primaryLabel)
 
             content
         }
@@ -111,7 +111,7 @@ private struct ResultSectionContainer<Content: View>: View {
         )
         .overlay {
             RoundedRectangle(cornerRadius: chrome.cornerRadius, style: .continuous)
-                .stroke(.white.opacity(chrome.strokeOpacity), lineWidth: 1)
+                .stroke(theme.stroke.opacity(chrome.strokeOpacity), lineWidth: 1)
         }
     }
 }

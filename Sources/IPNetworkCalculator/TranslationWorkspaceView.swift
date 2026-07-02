@@ -3,6 +3,7 @@ import IPCalculatorFeatures
 
 struct TranslationWorkspaceView: View {
     @Bindable var viewModel: TranslationWorkspaceViewModel
+    @Environment(\.calculatorTheme) private var theme
     let onCalculate: () -> Void
 
     var body: some View {
@@ -81,7 +82,7 @@ struct TranslationWorkspaceView: View {
             Text(title).font(.subheadline.weight(.semibold))
             Text(example)
                 .font(.footnote)
-                .foregroundStyle(CalculatorTheme.defaultDark.secondaryLabel)
+                .foregroundStyle(theme.secondaryLabel)
             NormalizingTextField(title, text: text, onSubmit: onCalculate)
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.plain)

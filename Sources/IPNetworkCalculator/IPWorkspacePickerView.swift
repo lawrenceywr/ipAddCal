@@ -3,6 +3,7 @@ import IPCalculatorFeatures
 
 struct IPWorkspacePickerView: View {
     @Binding var selection: IPWorkspaceMode
+    @Environment(\.calculatorTheme) private var theme
 
     var body: some View {
         Picker("IP 工作区", selection: $selection) {
@@ -12,6 +13,6 @@ struct IPWorkspacePickerView: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.large)
-        .tint(CalculatorTheme.defaultDark.accentMode.tint)
+        .tint(theme.accentMode.tint)
     }
 }

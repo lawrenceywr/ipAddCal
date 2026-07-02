@@ -3,7 +3,7 @@ import IPCalculatorFeatures
 
 struct SidebarNavigationView: View {
     @Binding var selection: AppWorkspace
-    private let theme = CalculatorTheme.defaultDark
+    @Environment(\.calculatorTheme) private var theme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -13,7 +13,7 @@ struct SidebarNavigationView: View {
                 } label: {
                     Text(workspace.title)
                         .font(.headline.weight(.semibold))
-                        .foregroundStyle(.white.opacity(0.94))
+                        .foregroundStyle(selection == workspace ? Color.white.opacity(0.96) : theme.primaryLabel)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 9)

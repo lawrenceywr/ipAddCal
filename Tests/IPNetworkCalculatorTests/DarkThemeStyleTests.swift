@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Testing
 @testable import IPNetworkCalculator
 
@@ -93,6 +94,47 @@ func defaultDarkThemeDefinesCustomResultSectionChrome() {
 }
 
 @Test
+func calculatorAppearanceDefaultsToDarkAndFallsBackFromInvalidStorage() {
+    #expect(CalculatorAppearance.defaultValue == .dark)
+    #expect(CalculatorAppearance(storedValue: nil) == .dark)
+    #expect(CalculatorAppearance(storedValue: "light") == .light)
+    #expect(CalculatorAppearance(storedValue: "unexpected") == .dark)
+    #expect(CalculatorAppearance.storageKey == "calculatorAppearance")
+}
+
+@Test
+func calculatorAppearanceMapsToColorSchemeThemeAndNextAction() {
+    #expect(CalculatorAppearance.dark.colorScheme == .dark)
+    #expect(CalculatorAppearance.dark.theme == .defaultDark)
+    #expect(CalculatorAppearance.dark.toggled == .light)
+    #expect(CalculatorAppearance.dark.toggleIconSystemName == "sun.max.fill")
+    #expect(CalculatorAppearance.dark.toggleAccessibilityLabel == "切换到浅色模式")
+
+    #expect(CalculatorAppearance.light.colorScheme == .light)
+    #expect(CalculatorAppearance.light.theme == .defaultLight)
+    #expect(CalculatorAppearance.light.toggled == .dark)
+    #expect(CalculatorAppearance.light.toggleIconSystemName == "moon.fill")
+    #expect(CalculatorAppearance.light.toggleAccessibilityLabel == "切换到深色模式")
+}
+
+@Test
+func defaultLightThemeUsesCalculatorOrangeAndReadableLightSurfaces() {
+    let light = CalculatorTheme.defaultLight
+    let dark = CalculatorTheme.defaultDark
+
+    #expect(light.enforcesDarkAppearance == false)
+    #expect(light.accentMode == .calculatorOrange)
+    #expect(light.accentMode == dark.accentMode)
+    #expect(light.workspaceSurface.cornerRadius == dark.workspaceSurface.cornerRadius)
+    #expect(light.formSurface.cornerRadius == dark.formSurface.cornerRadius)
+    #expect(light.popoverSurface.cornerRadius == dark.popoverSurface.cornerRadius)
+    #expect(light.resultSection.cornerRadius == dark.resultSection.cornerRadius)
+    #expect(light.fieldChrome.cornerRadius == dark.fieldChrome.cornerRadius)
+    #expect(light.chrome.integratedSidebarWidth == dark.chrome.integratedSidebarWidth)
+    #expect(light.chrome.historyButtonHorizontalPadding == dark.chrome.historyButtonHorizontalPadding)
+}
+
+@Test
 func darkThemeViewsUseSemanticErrorColor() throws {
     let packageRoot = URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent()
@@ -161,6 +203,52 @@ func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
                     .buttonStyle(.plain)
                     .calculatorHistoryButtonChrome()
 """))
+}
+
+@Test
+func appPersistsAndInjectsSelectedCalculatorAppearance() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/IPNetworkCalculatorApp.swift")
+
+    #expect(source.contains("@AppStorage(CalculatorAppearance.storageKey)"))
+    #expect(source.contains("CalculatorAppearance(storedValue: appearanceRawValue)"))
+    #expect(source.contains(".preferredColorScheme(selectedAppearance.colorScheme)"))
+    #expect(source.contains(".calculatorTheme(selectedAppearance.theme)"))
+}
+
+@Test
+func toolbarPlacesThemeToggleImmediatelyBeforeHistoryButton() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(source.contains("Image(systemName: appearance.toggleIconSystemName)"))
+    #expect(source.contains(".calculatorToolbarIconButtonChrome()"))
+    #expect(source.contains("Text(\"历史\")\n                        .calculatorHistoryButtonChrome()"))
+
+    let toggleIndex = try #require(source.range(of: "Image(systemName: appearance.toggleIconSystemName)"))
+    let historyIndex = try #require(source.range(of: "Text(\"历史\")"))
+    #expect(toggleIndex.lowerBound < historyIndex.lowerBound)
+}
+
+@Test
+func appViewsDoNotHardCodeDefaultDarkThemeOutsideThemeDefinitions() throws {
+    let packageRoot = URL(fileURLWithPath: #filePath)
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+        .deletingLastPathComponent()
+    let targetRoot = packageRoot.appending(path: "Sources/IPNetworkCalculator")
+    let sourceFiles = FileManager.default.enumerator(
+        at: targetRoot,
+        includingPropertiesForKeys: nil
+    )?
+        .compactMap { $0 as? URL }
+        .filter { $0.pathExtension == "swift" && $0.lastPathComponent != "ThemeStyle.swift" } ?? []
+
+    let offenders = try sourceFiles.filter { sourceFile in
+        let source = try String(contentsOf: sourceFile, encoding: .utf8)
+        return source.contains("CalculatorTheme.defaultDark")
+    }
+    .map(\.lastPathComponent)
+
+    #expect(offenders.isEmpty)
 }
 
 @Test

@@ -8,38 +8,57 @@ enum WorkspaceChrome {
     static let fieldLabelSpacing: CGFloat = 6
 }
 
-private let theme = CalculatorTheme.defaultDark
-
 private struct ChromeBackgroundModifier: ViewModifier {
-    let fillOpacity: Double
+    @Environment(\.calculatorTheme) private var theme
+    let fillOpacity: Double?
 
     func body(content: Content) -> some View {
         content
-            .background(theme.chromeBase.opacity(fillOpacity))
+            .background(theme.chromeBase.opacity(fillOpacity ?? theme.chrome.sidebarFillOpacity))
             .overlay(alignment: .top) {
                 Rectangle()
-                    .fill(.white.opacity(theme.chrome.toolbarLineOpacity))
+                    .fill(theme.stroke.opacity(theme.chrome.toolbarLineOpacity))
                     .frame(height: 1)
             }
     }
 }
 
 private struct HistoryButtonChromeModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
+
     func body(content: Content) -> some View {
         content
             .font(.headline.weight(.semibold))
-            .foregroundStyle(.white.opacity(0.94))
+            .foregroundStyle(theme.primaryLabel)
             .padding(.horizontal, theme.chrome.historyButtonHorizontalPadding)
             .padding(.vertical, theme.chrome.historyButtonVerticalPadding)
             .background(theme.chromeBase.opacity(0.62), in: Capsule())
             .overlay {
                 Capsule()
-                    .stroke(.white.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
+                    .stroke(theme.stroke.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
+            }
+    }
+}
+
+private struct ToolbarIconButtonChromeModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
+
+    func body(content: Content) -> some View {
+        content
+            .font(.headline.weight(.semibold))
+            .foregroundStyle(theme.primaryLabel)
+            .frame(width: 38, height: 34)
+            .background(theme.chromeBase.opacity(0.56), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(theme.stroke.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
             }
     }
 }
 
 private struct WorkspaceSurfaceModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
+
     func body(content: Content) -> some View {
         let surface = theme.workspaceSurface
 
@@ -50,24 +69,26 @@ private struct WorkspaceSurfaceModifier: ViewModifier {
             )
             .overlay {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
+                    .stroke(theme.stroke.opacity(surface.strokeOpacity), lineWidth: 1)
             }
             .overlay(alignment: .top) {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .stroke(theme.highlight.opacity(surface.highlightOpacity), lineWidth: 0.8)
                     .mask {
                         LinearGradient(
-                            colors: [.white, .white.opacity(0)],
+                            colors: [theme.highlight, theme.highlight.opacity(0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     }
             }
-            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 18, y: 10)
+            .shadow(color: theme.shadow.opacity(surface.shadowOpacity), radius: 18, y: 10)
     }
 }
 
 private struct CalculatorFormSurfaceModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
+
     func body(content: Content) -> some View {
         let surface = theme.formSurface
 
@@ -78,24 +99,25 @@ private struct CalculatorFormSurfaceModifier: ViewModifier {
             )
             .overlay {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
+                    .stroke(theme.stroke.opacity(surface.strokeOpacity), lineWidth: 1)
             }
             .overlay(alignment: .top) {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .stroke(theme.highlight.opacity(surface.highlightOpacity), lineWidth: 0.8)
                     .mask {
                         LinearGradient(
-                            colors: [.white, .white.opacity(0)],
+                            colors: [theme.highlight, theme.highlight.opacity(0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     }
             }
-            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 18, y: 10)
+            .shadow(color: theme.shadow.opacity(surface.shadowOpacity), radius: 18, y: 10)
     }
 }
 
 private struct CalculatorFieldModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
     var invalid: Bool
 
     func body(content: Content) -> some View {
@@ -111,7 +133,7 @@ private struct CalculatorFieldModifier: ViewModifier {
             .overlay {
                 RoundedRectangle(cornerRadius: field.cornerRadius, style: .continuous)
                     .stroke(
-                        invalid ? theme.error : .white.opacity(field.strokeOpacity),
+                        invalid ? theme.error : theme.stroke.opacity(field.strokeOpacity),
                         lineWidth: invalid ? field.invalidStrokeWidth : field.strokeWidth
                     )
             }
@@ -119,6 +141,8 @@ private struct CalculatorFieldModifier: ViewModifier {
 }
 
 private struct PopoverSurfaceModifier: ViewModifier {
+    @Environment(\.calculatorTheme) private var theme
+
     func body(content: Content) -> some View {
         let surface = theme.popoverSurface
 
@@ -129,25 +153,25 @@ private struct PopoverSurfaceModifier: ViewModifier {
             )
             .overlay {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.strokeOpacity), lineWidth: 1)
+                    .stroke(theme.stroke.opacity(surface.strokeOpacity), lineWidth: 1)
             }
             .overlay(alignment: .top) {
                 RoundedRectangle(cornerRadius: surface.cornerRadius, style: .continuous)
-                    .stroke(.white.opacity(surface.highlightOpacity), lineWidth: 0.8)
+                    .stroke(theme.highlight.opacity(surface.highlightOpacity), lineWidth: 0.8)
                     .mask {
                         LinearGradient(
-                            colors: [.white, .white.opacity(0)],
+                            colors: [theme.highlight, theme.highlight.opacity(0)],
                             startPoint: .top,
                             endPoint: .bottom
                         )
                     }
             }
-            .shadow(color: .black.opacity(surface.shadowOpacity), radius: 16, y: 8)
+            .shadow(color: theme.shadow.opacity(surface.shadowOpacity), radius: 16, y: 8)
     }
 }
 
 extension View {
-    func calculatorChromeBackground(fillOpacity: Double = theme.chrome.sidebarFillOpacity) -> some View {
+    func calculatorChromeBackground(fillOpacity: Double? = nil) -> some View {
         modifier(ChromeBackgroundModifier(fillOpacity: fillOpacity))
     }
 
@@ -169,5 +193,9 @@ extension View {
 
     func calculatorHistoryButtonChrome() -> some View {
         modifier(HistoryButtonChromeModifier())
+    }
+
+    func calculatorToolbarIconButtonChrome() -> some View {
+        modifier(ToolbarIconButtonChromeModifier())
     }
 }

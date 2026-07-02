@@ -9,6 +9,7 @@ struct BaseConversionLayout {
 
 struct BaseConversionView: View {
     @Bindable var viewModel: BaseConversionViewModel
+    @Environment(\.calculatorTheme) private var theme
     private let layout = BaseConversionLayout()
 
     var body: some View {
@@ -29,7 +30,7 @@ struct BaseConversionView: View {
                 if let message = viewModel.errorMessage {
                     Text(message)
                         .font(.footnote)
-                        .foregroundStyle(CalculatorTheme.defaultDark.error)
+                        .foregroundStyle(theme.error)
                 }
             }
             .padding(layout.binarySurfacePadding)

@@ -11,14 +11,24 @@ final class AppActivationDelegate: NSObject, NSApplicationDelegate {
 @main
 struct IPNetworkCalculatorApp: App {
     @NSApplicationDelegateAdaptor(AppActivationDelegate.self) private var appActivationDelegate
-    private let theme = CalculatorTheme.defaultDark
+    @AppStorage(CalculatorAppearance.storageKey) private var appearanceRawValue = CalculatorAppearance.defaultValue.rawValue
+
+    private var selectedAppearance: CalculatorAppearance {
+        CalculatorAppearance(storedValue: appearanceRawValue)
+    }
 
     var body: some Scene {
         WindowGroup("IP 地址计算器") {
-            ContentView()
+            ContentView(
+                appearance: selectedAppearance,
+                onToggleAppearance: {
+                    appearanceRawValue = selectedAppearance.toggled.rawValue
+                }
+            )
                 .frame(minWidth: 980, minHeight: 640)
-                .preferredColorScheme(theme.enforcesDarkAppearance ? .dark : nil)
-                .tint(theme.accentMode.tint)
+                .preferredColorScheme(selectedAppearance.colorScheme)
+                .tint(selectedAppearance.theme.accentMode.tint)
+                .calculatorTheme(selectedAppearance.theme)
         }
         .windowResizability(.contentMinSize)
         .commands {
