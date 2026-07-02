@@ -54,6 +54,7 @@ func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
     #expect(chrome.historyButtonStrokeOpacity == 0.14)
     #expect(chrome.integratedSidebarWidth == 168)
     #expect(chrome.integratedSidebarDividerOpacity == 0.10)
+    #expect(chrome.toolbarButtonSpacing == 18)
 }
 
 @Test
@@ -198,7 +199,8 @@ func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
 func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
-    #expect(source.contains("Text(\"历史\")\n                        .calculatorHistoryButtonChrome()"))
+    #expect(source.contains("Text(\"历史\")"))
+    #expect(source.contains(".calculatorHistoryButtonChrome()"))
     #expect(!source.contains("""
                     .buttonStyle(.plain)
                     .calculatorHistoryButtonChrome()
@@ -221,11 +223,29 @@ func toolbarPlacesThemeToggleImmediatelyBeforeHistoryButton() throws {
 
     #expect(source.contains("Image(systemName: appearance.toggleIconSystemName)"))
     #expect(source.contains(".calculatorToolbarIconButtonChrome()"))
-    #expect(source.contains("Text(\"历史\")\n                        .calculatorHistoryButtonChrome()"))
+    #expect(source.contains("Text(\"历史\")"))
+    #expect(source.contains(".calculatorHistoryButtonChrome()"))
 
     let toggleIndex = try #require(source.range(of: "Image(systemName: appearance.toggleIconSystemName)"))
     let historyIndex = try #require(source.range(of: "Text(\"历史\")"))
     #expect(toggleIndex.lowerBound < historyIndex.lowerBound)
+}
+
+@Test
+func toolbarButtonClusterUsesSpacingWithoutOuterToolbarGroup() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(!source.contains("ToolbarItemGroup"))
+    #expect(source.contains("ToolbarItem {"))
+    #expect(source.contains("HStack(spacing: theme.chrome.toolbarButtonSpacing)"))
+}
+
+@Test
+func toolbarButtonsExposeIndependentAccessibilityLabels() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+
+    #expect(source.contains(".accessibilityLabel(appearance.toggleAccessibilityLabel)"))
+    #expect(source.contains(".accessibilityLabel(\"历史\")"))
 }
 
 @Test

@@ -35,31 +35,34 @@ struct ContentView: View {
         }
         .background(theme.windowBase.gradient)
         .toolbar {
-            ToolbarItemGroup {
-                Button {
-                    onToggleAppearance()
-                } label: {
-                    Image(systemName: appearance.toggleIconSystemName)
-                        .calculatorToolbarIconButtonChrome()
-                }
-                .buttonStyle(.plain)
-                .help(appearance.toggleAccessibilityLabel)
-                .accessibilityLabel(appearance.toggleAccessibilityLabel)
+            ToolbarItem {
+                HStack(spacing: theme.chrome.toolbarButtonSpacing) {
+                    Button {
+                        onToggleAppearance()
+                    } label: {
+                        Image(systemName: appearance.toggleIconSystemName)
+                            .calculatorToolbarIconButtonChrome()
+                    }
+                    .buttonStyle(.plain)
+                    .help(appearance.toggleAccessibilityLabel)
+                    .accessibilityLabel(appearance.toggleAccessibilityLabel)
 
-                Button {
-                    workbench.navigation.isHistoryPresented.toggle()
-                } label: {
-                    Text("历史")
-                        .calculatorHistoryButtonChrome()
-                }
-                .buttonStyle(.plain)
-                .popover(isPresented: $workbench.navigation.isHistoryPresented) {
-                    HistoryPopoverView(
-                        entries: workbench.history.entries,
-                        onRestore: { entry in
-                            workbench.restore(entry)
-                        }
-                    )
+                    Button {
+                        workbench.navigation.isHistoryPresented.toggle()
+                    } label: {
+                        Text("历史")
+                            .calculatorHistoryButtonChrome()
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("历史")
+                    .popover(isPresented: $workbench.navigation.isHistoryPresented) {
+                        HistoryPopoverView(
+                            entries: workbench.history.entries,
+                            onRestore: { entry in
+                                workbench.restore(entry)
+                            }
+                        )
+                    }
                 }
             }
         }
