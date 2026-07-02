@@ -54,7 +54,6 @@ func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
     #expect(chrome.historyButtonStrokeOpacity == 0.14)
     #expect(chrome.integratedSidebarWidth == 168)
     #expect(chrome.integratedSidebarDividerOpacity == 0.10)
-    #expect(chrome.toolbarButtonSpacing == 18)
 }
 
 @Test
@@ -232,12 +231,14 @@ func toolbarPlacesThemeToggleImmediatelyBeforeHistoryButton() throws {
 }
 
 @Test
-func toolbarButtonClusterUsesSpacingWithoutOuterToolbarGroup() throws {
+func toolbarButtonsUseSeparateItemsWithoutOuterCluster() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+    let toolbarItemCount = source.components(separatedBy: "ToolbarItem {").count - 1
 
     #expect(!source.contains("ToolbarItemGroup"))
-    #expect(source.contains("ToolbarItem {"))
-    #expect(source.contains("HStack(spacing: theme.chrome.toolbarButtonSpacing)"))
+    #expect(!source.contains("HStack(spacing: theme.chrome.toolbarButtonSpacing)"))
+    #expect(!source.contains("toolbarButtonSpacing"))
+    #expect(toolbarItemCount >= 2)
 }
 
 @Test
