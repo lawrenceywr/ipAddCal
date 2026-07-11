@@ -23,39 +23,6 @@ private struct ChromeBackgroundModifier: ViewModifier {
     }
 }
 
-private struct HistoryButtonChromeModifier: ViewModifier {
-    @Environment(\.calculatorTheme) private var theme
-
-    func body(content: Content) -> some View {
-        content
-            .font(.headline.weight(.semibold))
-            .foregroundStyle(theme.primaryLabel)
-            .padding(.horizontal, theme.chrome.historyButtonHorizontalPadding)
-            .padding(.vertical, theme.chrome.historyButtonVerticalPadding)
-            .background(theme.chromeBase.opacity(0.62), in: Capsule())
-            .overlay {
-                Capsule()
-                    .stroke(theme.stroke.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
-            }
-    }
-}
-
-private struct ToolbarIconButtonChromeModifier: ViewModifier {
-    @Environment(\.calculatorTheme) private var theme
-
-    func body(content: Content) -> some View {
-        content
-            .font(.headline.weight(.semibold))
-            .foregroundStyle(theme.primaryLabel)
-            .frame(width: 38, height: 34)
-            .background(theme.chromeBase.opacity(0.56), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .overlay {
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(theme.stroke.opacity(theme.chrome.historyButtonStrokeOpacity), lineWidth: 1)
-            }
-    }
-}
-
 private struct WorkspaceSurfaceModifier: ViewModifier {
     @Environment(\.calculatorTheme) private var theme
 
@@ -189,13 +156,5 @@ extension View {
 
     func calculatorFieldChrome(invalid: Bool = false) -> some View {
         modifier(CalculatorFieldModifier(invalid: invalid))
-    }
-
-    func calculatorHistoryButtonChrome() -> some View {
-        modifier(HistoryButtonChromeModifier())
-    }
-
-    func calculatorToolbarIconButtonChrome() -> some View {
-        modifier(ToolbarIconButtonChromeModifier())
     }
 }

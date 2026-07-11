@@ -29,9 +29,6 @@ struct CalculatorChromeStyle: Equatable {
     let sidebarFloatingCornerRadius: CGFloat
     let sidebarRowCornerRadius: CGFloat
     let titleItemBorderOpacity: Double
-    let historyButtonHorizontalPadding: CGFloat
-    let historyButtonVerticalPadding: CGFloat
-    let historyButtonStrokeOpacity: Double
     let integratedSidebarWidth: CGFloat
     let integratedSidebarDividerOpacity: Double
 }
@@ -225,14 +222,11 @@ extension CalculatorTheme {
     var chrome: CalculatorChromeStyle {
         CalculatorChromeStyle(
             sidebarFillOpacity: 0.96,
-            detailFillOpacity: 0.92,
+            detailFillOpacity: 0.94,
             toolbarLineOpacity: 0.06,
             sidebarFloatingCornerRadius: 0,
             sidebarRowCornerRadius: 10,
             titleItemBorderOpacity: 0,
-            historyButtonHorizontalPadding: 16,
-            historyButtonVerticalPadding: 8,
-            historyButtonStrokeOpacity: 0.14,
             integratedSidebarWidth: 168,
             integratedSidebarDividerOpacity: 0.10
         )

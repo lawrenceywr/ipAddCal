@@ -36,7 +36,7 @@ func defaultDarkThemeDefinesChromeHierarchy() {
     let theme = CalculatorTheme.defaultDark
 
     #expect(theme.chrome.sidebarFillOpacity == 0.96)
-    #expect(theme.chrome.detailFillOpacity == 0.92)
+    #expect(theme.chrome.detailFillOpacity == 0.94)
     #expect(theme.chrome.toolbarLineOpacity == 0.06)
     #expect(theme.chrome.detailFillOpacity < theme.chrome.sidebarFillOpacity)
     #expect(theme.workspaceSurface.fillOpacity < theme.popoverSurface.fillOpacity)
@@ -49,9 +49,6 @@ func defaultDarkThemeDefinesIntegratedSidebarAndToolbarChrome() {
     #expect(chrome.sidebarFloatingCornerRadius == 0)
     #expect(chrome.sidebarRowCornerRadius == 10)
     #expect(chrome.titleItemBorderOpacity == 0)
-    #expect(chrome.historyButtonHorizontalPadding == 16)
-    #expect(chrome.historyButtonVerticalPadding == 8)
-    #expect(chrome.historyButtonStrokeOpacity == 0.14)
     #expect(chrome.integratedSidebarWidth == 168)
     #expect(chrome.integratedSidebarDividerOpacity == 0.10)
 }
@@ -131,7 +128,6 @@ func defaultLightThemeUsesCalculatorOrangeAndReadableLightSurfaces() {
     #expect(light.resultSection.cornerRadius == dark.resultSection.cornerRadius)
     #expect(light.fieldChrome.cornerRadius == dark.fieldChrome.cornerRadius)
     #expect(light.chrome.integratedSidebarWidth == dark.chrome.integratedSidebarWidth)
-    #expect(light.chrome.historyButtonHorizontalPadding == dark.chrome.historyButtonHorizontalPadding)
 }
 
 @Test
@@ -191,19 +187,19 @@ func darkThemeToolbarAvoidsPrincipalTitleCapsule() throws {
     #expect(!source.contains("placement: .principal"))
     #expect(!source.contains("placement: .navigation"))
     #expect(!source.contains(".navigationTitle("))
-    #expect(source.contains("calculatorHistoryButtonChrome"))
+    #expect(!source.contains("calculatorHistoryButtonChrome"))
+    #expect(!source.contains("calculatorToolbarIconButtonChrome"))
 }
 
 @Test
-func darkThemeToolbarAppliesHistoryChromeToButtonLabelOnly() throws {
+func darkThemeToolbarUsesSystemButtonChrome() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
     #expect(source.contains("Text(\"历史\")"))
-    #expect(source.contains(".calculatorHistoryButtonChrome()"))
-    #expect(!source.contains("""
-                    .buttonStyle(.plain)
-                    .calculatorHistoryButtonChrome()
-"""))
+    #expect(source.contains("Image(systemName: appearance.toggleIconSystemName)"))
+    #expect(!source.contains(".calculatorHistoryButtonChrome()"))
+    #expect(!source.contains(".calculatorToolbarIconButtonChrome()"))
+    #expect(!source.contains(".buttonStyle(.plain)"))
 }
 
 @Test
@@ -221,9 +217,9 @@ func toolbarPlacesThemeToggleImmediatelyBeforeHistoryButton() throws {
     let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
 
     #expect(source.contains("Image(systemName: appearance.toggleIconSystemName)"))
-    #expect(source.contains(".calculatorToolbarIconButtonChrome()"))
     #expect(source.contains("Text(\"历史\")"))
-    #expect(source.contains(".calculatorHistoryButtonChrome()"))
+    #expect(!source.contains(".calculatorToolbarIconButtonChrome()"))
+    #expect(!source.contains(".calculatorHistoryButtonChrome()"))
 
     let toggleIndex = try #require(source.range(of: "Image(systemName: appearance.toggleIconSystemName)"))
     let historyIndex = try #require(source.range(of: "Text(\"历史\")"))

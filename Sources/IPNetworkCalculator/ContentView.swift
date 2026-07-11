@@ -40,9 +40,7 @@ struct ContentView: View {
                     onToggleAppearance()
                 } label: {
                     Image(systemName: appearance.toggleIconSystemName)
-                        .calculatorToolbarIconButtonChrome()
                 }
-                .buttonStyle(.plain)
                 .help(appearance.toggleAccessibilityLabel)
                 .accessibilityLabel(appearance.toggleAccessibilityLabel)
             }
@@ -52,9 +50,7 @@ struct ContentView: View {
                     workbench.navigation.isHistoryPresented.toggle()
                 } label: {
                     Text("历史")
-                        .calculatorHistoryButtonChrome()
                 }
-                .buttonStyle(.plain)
                 .accessibilityLabel("历史")
                 .popover(isPresented: $workbench.navigation.isHistoryPresented) {
                     HistoryPopoverView(
