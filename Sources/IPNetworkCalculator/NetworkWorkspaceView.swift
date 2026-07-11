@@ -4,6 +4,7 @@ import IPCalculatorFeatures
 struct NetworkWorkspaceView: View {
     @Bindable var viewModel: NetworkWorkspaceViewModel
     @Environment(\.calculatorTheme) private var theme
+    @State private var isFieldFocused = false
     let onCalculate: () -> Void
 
     var body: some View {
@@ -49,10 +50,18 @@ struct NetworkWorkspaceView: View {
             Text(example)
                 .font(.footnote)
                 .foregroundStyle(theme.secondaryLabel)
-            NormalizingTextField(title, text: text, onSubmit: onCalculate)
+            NormalizingTextField(
+                title,
+                text: text,
+                isFocused: $isFieldFocused,
+                onSubmit: onCalculate
+            )
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.plain)
-                .calculatorFieldChrome()
+                .calculatorFieldChrome(
+                    invalid: viewModel.errorMessage != nil,
+                    focused: isFieldFocused
+                )
         }
     }
 

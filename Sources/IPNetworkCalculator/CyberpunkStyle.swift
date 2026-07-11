@@ -147,6 +147,7 @@ struct CalculatorWorkspaceHeader: View {
                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
                     .tracking(1.5)
                     .foregroundStyle(theme.accentSecondary)
+                    .accessibilityHidden(true)
 
                 HStack(alignment: .center, spacing: 8) {
                     ZStack(alignment: .leading) {

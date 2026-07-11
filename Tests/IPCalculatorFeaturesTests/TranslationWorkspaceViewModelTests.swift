@@ -80,6 +80,30 @@ func translationWorkspaceNormalizesChinesePunctuationAsTextChanges() {
 
 @MainActor
 @Test
+func translationWorkspaceTracksTheInvalidInputField() {
+    let viewModel = TranslationWorkspaceViewModel()
+
+    viewModel.direction = .ipv4ToIPv6
+    _ = viewModel.calculate()
+    #expect(viewModel.invalidField == .ipv4Input)
+
+    viewModel.ipv4Input = "48.235.24.0/30"
+    _ = viewModel.calculate()
+    #expect(viewModel.invalidField == .ipv6PrefixInput)
+
+    viewModel.direction = .ipv6ToIPv4
+    viewModel.ipv6Input = "not-an-address"
+    _ = viewModel.calculate()
+    #expect(viewModel.invalidField == .ipv6Input)
+
+    viewModel.ipv6Input = "2001:db8::30eb:1800/126"
+    viewModel.ipv6ReversePrefixInput = "not-a-prefix"
+    _ = viewModel.calculate()
+    #expect(viewModel.invalidField == .ipv6ReversePrefixInput)
+}
+
+@MainActor
+@Test
 func translationWorkspaceRestoreSupportsIpv4ToIpv6Direction() {
     let viewModel = TranslationWorkspaceViewModel()
     viewModel.resultSections = [

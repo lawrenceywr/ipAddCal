@@ -128,6 +128,7 @@ private struct CalculatorFormSurfaceModifier: ViewModifier {
 private struct CalculatorFieldModifier: ViewModifier {
     @Environment(\.calculatorTheme) private var theme
     var invalid: Bool
+    var focused: Bool
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -145,8 +146,12 @@ private struct CalculatorFieldModifier: ViewModifier {
                 .overlay {
                     ChamferedRectangle(cut: 9)
                         .stroke(
-                            invalid ? theme.error : theme.accentMode.tint.opacity(0.46),
-                            lineWidth: invalid ? field.invalidStrokeWidth : field.strokeWidth
+                            invalid
+                                ? theme.error
+                                : theme.accentMode.tint.opacity(focused ? 1 : 0.46),
+                            lineWidth: invalid
+                                ? field.invalidStrokeWidth
+                                : (focused ? 1.7 : field.strokeWidth)
                         )
                 }
                 .overlay(alignment: .leading) {
@@ -157,8 +162,8 @@ private struct CalculatorFieldModifier: ViewModifier {
                 }
                 .shadow(
                     color: (invalid ? theme.error : theme.accentMode.tint)
-                        .opacity(theme.glowOpacity * (invalid ? 0.70 : 0.28)),
-                    radius: invalid ? 7 : 4
+                        .opacity(theme.glowOpacity * (invalid ? 0.70 : (focused ? 0.82 : 0.28))),
+                    radius: invalid || focused ? 8 : 4
                 )
         } else {
             content
@@ -271,8 +276,8 @@ extension View {
         modifier(PopoverSurfaceModifier())
     }
 
-    func calculatorFieldChrome(invalid: Bool = false) -> some View {
-        modifier(CalculatorFieldModifier(invalid: invalid))
+    func calculatorFieldChrome(invalid: Bool = false, focused: Bool = false) -> some View {
+        modifier(CalculatorFieldModifier(invalid: invalid, focused: focused))
     }
 
     func calculatorResultSectionSurface() -> some View {

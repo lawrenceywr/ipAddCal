@@ -35,7 +35,13 @@ struct ContentView: View {
                 CalculatorWorkspaceBackground()
             }
         }
-        .background(theme.windowBase)
+        .background {
+            if theme.visualStyle == .neonTactical {
+                theme.windowBase
+            } else {
+                Rectangle().fill(theme.windowBase.gradient)
+            }
+        }
         .toolbar {
             ToolbarItem {
                 Button {

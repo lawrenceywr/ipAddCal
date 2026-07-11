@@ -48,6 +48,13 @@ public enum TranslationDirection: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
+public enum TranslationInputField: Sendable {
+    case ipv4Input
+    case ipv6PrefixInput
+    case ipv6Input
+    case ipv6ReversePrefixInput
+}
+
 public enum CalculatorMode: String, CaseIterable, Identifiable, Sendable {
     case network
     case ipv4ToIPv6

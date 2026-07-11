@@ -204,6 +204,23 @@ func calculatorControlsUseSemanticCyberpunkChrome() throws {
 }
 
 @Test
+func cyberpunkFieldsConnectInvalidFocusAndClassicBackgroundPaths() throws {
+    let network = try sourceText(relativePath: "Sources/IPNetworkCalculator/NetworkWorkspaceView.swift")
+    let translation = try sourceText(relativePath: "Sources/IPNetworkCalculator/TranslationWorkspaceView.swift")
+    let field = try sourceText(relativePath: "Sources/IPNetworkCalculator/NormalizingTextField.swift")
+    let content = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+    let header = try sourceText(relativePath: "Sources/IPNetworkCalculator/CyberpunkStyle.swift")
+
+    #expect(network.contains("focused: isFieldFocused"))
+    #expect(network.contains("invalid: viewModel.errorMessage != nil"))
+    #expect(translation.contains("viewModel.invalidField"))
+    #expect(field.contains("controlTextDidBeginEditing"))
+    #expect(content.contains("theme.visualStyle == .neonTactical"))
+    #expect(header.contains("Text(\"> \\(route) // SECURE_LINK\")"))
+    #expect(header.contains(".accessibilityHidden(true)"))
+}
+
+@Test
 func darkThemeViewsUseSemanticErrorColor() throws {
     let packageRoot = URL(fileURLWithPath: #filePath)
         .deletingLastPathComponent()

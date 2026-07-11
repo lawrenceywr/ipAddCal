@@ -5,16 +5,23 @@ import IPCalculatorCore
 struct NormalizingTextField: NSViewRepresentable {
     let title: String
     @Binding var text: String
+    @Binding var isFocused: Bool
     let onSubmit: () -> Void
 
-    init(_ title: String, text: Binding<String>, onSubmit: @escaping () -> Void) {
+    init(
+        _ title: String,
+        text: Binding<String>,
+        isFocused: Binding<Bool> = .constant(false),
+        onSubmit: @escaping () -> Void
+    ) {
         self.title = title
         self._text = text
+        self._isFocused = isFocused
         self.onSubmit = onSubmit
     }
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text, onSubmit: onSubmit)
+        Coordinator(text: $text, isFocused: $isFocused, onSubmit: onSubmit)
     }
 
     func makeNSView(context: Context) -> NSTextField {
@@ -36,6 +43,7 @@ struct NormalizingTextField: NSViewRepresentable {
 
     func updateNSView(_ textField: NSTextField, context: Context) {
         context.coordinator.text = $text
+        context.coordinator.isFocused = $isFocused
         context.coordinator.onSubmit = onSubmit
         textField.placeholderString = title
         if textField.stringValue != text {
@@ -46,11 +54,21 @@ struct NormalizingTextField: NSViewRepresentable {
     @MainActor
     final class Coordinator: NSObject, NSTextFieldDelegate {
         var text: Binding<String>
+        var isFocused: Binding<Bool>
         var onSubmit: () -> Void
 
-        init(text: Binding<String>, onSubmit: @escaping () -> Void) {
+        init(
+            text: Binding<String>,
+            isFocused: Binding<Bool> = .constant(false),
+            onSubmit: @escaping () -> Void
+        ) {
             self.text = text
+            self.isFocused = isFocused
             self.onSubmit = onSubmit
+        }
+
+        func controlTextDidBeginEditing(_ notification: Notification) {
+            isFocused.wrappedValue = true
         }
 
         func controlTextDidChange(_ notification: Notification) {
@@ -59,6 +77,7 @@ struct NormalizingTextField: NSViewRepresentable {
 
         func controlTextDidEndEditing(_ notification: Notification) {
             normalize(notification.object as? NSTextField)
+            isFocused.wrappedValue = false
         }
 
         func control(
