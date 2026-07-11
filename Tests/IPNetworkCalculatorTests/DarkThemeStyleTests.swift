@@ -8,9 +8,20 @@ func defaultDarkThemeLocksConfirmedVisualDecisions() {
     let theme = CalculatorTheme.defaultDark
 
     #expect(theme.enforcesDarkAppearance == true)
-    #expect(theme.accentMode == .calculatorOrange)
+    #expect(theme.accentMode == .cyberGreen)
     #expect(theme.glassIntensity == .elevated)
     #expect(theme.surfaceContrast == .clearBoundaries)
+}
+
+@Test
+func darkThemeUsesNeonTacticalTokens() {
+    let theme = CalculatorTheme.defaultDark
+
+    #expect(theme.visualStyle == .neonTactical)
+    #expect(theme.accentMode == .cyberGreen)
+    #expect(theme.gridOpacity == 0.055)
+    #expect(theme.scanlineOpacity == 0.16)
+    #expect(theme.glowOpacity == 0.42)
 }
 
 @Test
@@ -120,14 +131,93 @@ func defaultLightThemeUsesCalculatorOrangeAndReadableLightSurfaces() {
     let dark = CalculatorTheme.defaultDark
 
     #expect(light.enforcesDarkAppearance == false)
+    #expect(light.visualStyle == .classicGlass)
     #expect(light.accentMode == .calculatorOrange)
-    #expect(light.accentMode == dark.accentMode)
+    #expect(light.accentMode != dark.accentMode)
+    #expect(light.gridOpacity == 0)
+    #expect(light.scanlineOpacity == 0)
+    #expect(light.glowOpacity == 0)
     #expect(light.workspaceSurface.cornerRadius == dark.workspaceSurface.cornerRadius)
     #expect(light.formSurface.cornerRadius == dark.formSurface.cornerRadius)
     #expect(light.popoverSurface.cornerRadius == dark.popoverSurface.cornerRadius)
     #expect(light.resultSection.cornerRadius == dark.resultSection.cornerRadius)
     #expect(light.fieldChrome.cornerRadius == dark.fieldChrome.cornerRadius)
     #expect(light.chrome.integratedSidebarWidth == dark.chrome.integratedSidebarWidth)
+}
+
+@Test
+func lightThemeRemainsClassicGlass() {
+    let theme = CalculatorTheme.defaultLight
+
+    #expect(theme.visualStyle == .classicGlass)
+    #expect(theme.accentMode == .calculatorOrange)
+    #expect(theme.gridOpacity == 0)
+    #expect(theme.scanlineOpacity == 0)
+    #expect(theme.glowOpacity == 0)
+}
+
+@Test
+func cyberpunkPrimitivesProvideChamfersBackgroundAndReducedMotion() throws {
+    let source = try sourceText(relativePath: "Sources/IPNetworkCalculator/CyberpunkStyle.swift")
+
+    #expect(source.contains("struct ChamferedRectangle: InsettableShape"))
+    #expect(source.contains("struct CalculatorWorkspaceBackground"))
+    #expect(source.contains("@Environment(\\.accessibilityReduceMotion)"))
+    #expect(source.contains(".allowsHitTesting(false)"))
+}
+
+@Test
+func sharedSurfaceModifiersRouteThroughCyberpunkGeometry() throws {
+    let glass = try sourceText(relativePath: "Sources/IPNetworkCalculator/GlassStyle.swift")
+    let results = try sourceText(relativePath: "Sources/IPNetworkCalculator/ResultPanelView.swift")
+
+    #expect(glass.contains("theme.visualStyle == .neonTactical"))
+    #expect(glass.contains("ChamferedRectangle"))
+    #expect(glass.contains("calculatorResultSectionSurface"))
+    #expect(results.contains(".calculatorResultSectionSurface()"))
+}
+
+@Test
+func rootAndWorkspacesComposeNeonTacticalPresentation() throws {
+    let content = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+    let sidebar = try sourceText(relativePath: "Sources/IPNetworkCalculator/SidebarNavigationView.swift")
+    let ip = try sourceText(relativePath: "Sources/IPNetworkCalculator/IPWorkspaceView.swift")
+    let base = try sourceText(relativePath: "Sources/IPNetworkCalculator/BaseConversionView.swift")
+
+    #expect(content.contains("CalculatorWorkspaceBackground"))
+    #expect(sidebar.contains("theme.visualStyle == .neonTactical"))
+    #expect(ip.contains("CalculatorWorkspaceHeader"))
+    #expect(base.contains("CalculatorWorkspaceHeader"))
+}
+
+@Test
+func calculatorControlsUseSemanticCyberpunkChrome() throws {
+    let network = try sourceText(relativePath: "Sources/IPNetworkCalculator/NetworkWorkspaceView.swift")
+    let translation = try sourceText(relativePath: "Sources/IPNetworkCalculator/TranslationWorkspaceView.swift")
+    let bits = try sourceText(relativePath: "Sources/IPNetworkCalculator/BinaryBitGridView.swift")
+    let history = try sourceText(relativePath: "Sources/IPNetworkCalculator/HistoryPopoverView.swift")
+
+    #expect(network.contains(".calculatorPrimaryActionChrome()"))
+    #expect(translation.contains(".calculatorPrimaryActionChrome()"))
+    #expect(bits.contains("ChamferedRectangle"))
+    #expect(history.contains(".calculatorSecondaryActionChrome()"))
+}
+
+@Test
+func cyberpunkFieldsConnectInvalidFocusAndClassicBackgroundPaths() throws {
+    let network = try sourceText(relativePath: "Sources/IPNetworkCalculator/NetworkWorkspaceView.swift")
+    let translation = try sourceText(relativePath: "Sources/IPNetworkCalculator/TranslationWorkspaceView.swift")
+    let field = try sourceText(relativePath: "Sources/IPNetworkCalculator/NormalizingTextField.swift")
+    let content = try sourceText(relativePath: "Sources/IPNetworkCalculator/ContentView.swift")
+    let header = try sourceText(relativePath: "Sources/IPNetworkCalculator/CyberpunkStyle.swift")
+
+    #expect(network.contains("focused: isFieldFocused"))
+    #expect(network.contains("invalid: viewModel.errorMessage != nil"))
+    #expect(translation.contains("viewModel.invalidField"))
+    #expect(field.contains("controlTextDidBeginEditing"))
+    #expect(content.contains("theme.visualStyle == .neonTactical"))
+    #expect(header.contains("Text(\"> \\(route) // SECURE_LINK\")"))
+    #expect(header.contains(".accessibilityHidden(true)"))
 }
 
 @Test

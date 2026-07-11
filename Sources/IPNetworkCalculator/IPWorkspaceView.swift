@@ -6,6 +6,12 @@ struct IPWorkspaceView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            CalculatorWorkspaceHeader(
+                route: "WORKSPACE / IP_CALCULATOR",
+                title: "NETWORK TERMINAL",
+                subtitle: "解析 IPv4 / IPv6 地址、子网与映射关系"
+            )
+
             IPWorkspacePickerView(selection: $workbench.navigation.selectedIPMode)
 
             switch workbench.navigation.selectedIPMode {

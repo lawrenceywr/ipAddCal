@@ -31,9 +31,17 @@ struct ContentView: View {
                 .padding(WorkspaceChrome.contentPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .background(theme.windowBase.gradient)
+            .background {
+                CalculatorWorkspaceBackground()
+            }
         }
-        .background(theme.windowBase.gradient)
+        .background {
+            if theme.visualStyle == .neonTactical {
+                theme.windowBase
+            } else {
+                Rectangle().fill(theme.windowBase.gradient)
+            }
+        }
         .toolbar {
             ToolbarItem {
                 Button {

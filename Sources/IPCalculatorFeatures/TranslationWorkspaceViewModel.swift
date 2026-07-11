@@ -17,6 +17,7 @@ public final class TranslationWorkspaceViewModel {
     public var resultSections: [ResultSection] = []
     public var statusText = "等待输入..."
     public var errorMessage: String?
+    public var invalidField: TranslationInputField?
     public var copyAllText = ""
     public var primaryCopyText = ""
     public var primaryCopyLabel = "IPv6 网段"
@@ -53,6 +54,7 @@ public final class TranslationWorkspaceViewModel {
         } catch let error as IPCalculatorError {
             statusText = "错误"
             errorMessage = error.userMessage
+            invalidField = resolvedInvalidField(for: error)
             return nil
         } catch {
             statusText = "错误"
@@ -79,9 +81,11 @@ public final class TranslationWorkspaceViewModel {
     private func calculateIPv4ToIPv6() throws -> HistoryEntry {
         let normalizedIPv4 = InputNormalizer.normalizeFieldText(ipv4Input)
         let normalizedPrefix = InputNormalizer.normalizeFieldText(ipv6PrefixInput)
+        invalidField = .ipv4Input
         guard !normalizedIPv4.isEmpty else {
             throw IPCalculatorError.emptyInput("请输入 IPv4 网段，例如 48.235.24.0/30")
         }
+        invalidField = .ipv6PrefixInput
         guard !normalizedPrefix.isEmpty else {
             throw IPCalculatorError.emptyInput("请输入 IPv6 前 96 位，例如 2001:db8::")
         }
@@ -89,7 +93,9 @@ public final class TranslationWorkspaceViewModel {
         ipv4Input = normalizedIPv4
         ipv6PrefixInput = normalizedPrefix
 
+        invalidField = .ipv4Input
         let input = try NetworkCalculator.parseInput([normalizedIPv4])
+        invalidField = .ipv6PrefixInput
         let result = try NetworkCalculator.generateIPv6FromIPv4(input, ipv6PrefixText: normalizedPrefix)
         let sections = buildIPv4ToIPv6Sections(result)
 
@@ -98,6 +104,7 @@ public final class TranslationWorkspaceViewModel {
         copyAllText = clipboardText(sections)
         primaryCopyText = result.ipv6Network
         primaryCopyLabel = "IPv6 网段"
+        invalidField = nil
 
         return HistoryEntry(
             title: result.ipv6Network,
@@ -113,6 +120,7 @@ public final class TranslationWorkspaceViewModel {
     private func calculateIPv6ToIPv4() throws -> HistoryEntry {
         let normalizedIPv6 = InputNormalizer.normalizeFieldText(ipv6Input)
         let normalizedPrefix = InputNormalizer.normalizeFieldText(ipv6ReversePrefixInput)
+        invalidField = .ipv6Input
         guard !normalizedIPv6.isEmpty else {
             throw IPCalculatorError.emptyInput("请输入 IPv6 地址或网段，例如 2001:db8::30eb:1800/126")
         }
@@ -131,6 +139,7 @@ public final class TranslationWorkspaceViewModel {
         copyAllText = clipboardText(sections)
         primaryCopyText = result.ipv4Network
         primaryCopyLabel = "IPv4 网段"
+        invalidField = nil
 
         return HistoryEntry(
             title: result.ipv4Network,
@@ -200,8 +209,22 @@ public final class TranslationWorkspaceViewModel {
         resultSections = []
         statusText = "等待输入..."
         errorMessage = nil
+        invalidField = nil
         copyAllText = ""
         primaryCopyText = ""
         primaryCopyLabel = direction == .ipv4ToIPv6 ? "IPv6 网段" : "IPv4 网段"
+    }
+
+    private func resolvedInvalidField(for error: IPCalculatorError) -> TranslationInputField? {
+        switch error {
+        case .ipv6PrefixRequired,
+             .ipv6PrefixMustBe96,
+             .invalidIPv6Prefix,
+             .ipv6PrefixHasHostBits,
+             .ipv6PrefixMismatch:
+            direction == .ipv4ToIPv6 ? .ipv6PrefixInput : .ipv6ReversePrefixInput
+        default:
+            invalidField
+        }
     }
 }

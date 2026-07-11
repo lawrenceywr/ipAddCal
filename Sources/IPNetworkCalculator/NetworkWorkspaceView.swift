@@ -4,6 +4,7 @@ import IPCalculatorFeatures
 struct NetworkWorkspaceView: View {
     @Bindable var viewModel: NetworkWorkspaceViewModel
     @Environment(\.calculatorTheme) private var theme
+    @State private var isFieldFocused = false
     let onCalculate: () -> Void
 
     var body: some View {
@@ -24,7 +25,7 @@ struct NetworkWorkspaceView: View {
                         onCalculate()
                     }
                     .keyboardShortcut(.return)
-                    .buttonStyle(.borderedProminent)
+                    .calculatorPrimaryActionChrome()
                 }
             }
             .padding(WorkspaceChrome.surfacePadding)
@@ -45,14 +46,39 @@ struct NetworkWorkspaceView: View {
 
     private func field(_ title: String, example: String, text: Binding<String>) -> some View {
         VStack(alignment: .leading, spacing: WorkspaceChrome.fieldLabelSpacing) {
-            Text(title).font(.subheadline.weight(.semibold))
+            fieldLabel(title)
             Text(example)
                 .font(.footnote)
                 .foregroundStyle(theme.secondaryLabel)
-            NormalizingTextField(title, text: text, onSubmit: onCalculate)
+            NormalizingTextField(
+                title,
+                text: text,
+                isFocused: $isFieldFocused,
+                onSubmit: onCalculate
+            )
                 .font(.system(.body, design: .monospaced))
                 .textFieldStyle(.plain)
-                .calculatorFieldChrome()
+                .calculatorFieldChrome(
+                    invalid: viewModel.errorMessage != nil,
+                    focused: isFieldFocused
+                )
+        }
+    }
+
+    @ViewBuilder
+    private func fieldLabel(_ title: String) -> some View {
+        if theme.visualStyle == .neonTactical {
+            HStack(spacing: 7) {
+                Text("01 //")
+                    .foregroundStyle(theme.accentSecondary)
+                    .accessibilityHidden(true)
+                Text(title)
+                    .foregroundStyle(theme.primaryLabel)
+            }
+            .font(.system(.subheadline, design: .monospaced).weight(.bold))
+            .tracking(0.6)
+        } else {
+            Text(title).font(.subheadline.weight(.semibold))
         }
     }
 

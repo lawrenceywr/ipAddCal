@@ -50,3 +50,34 @@ func normalizingTextFieldCoordinatorSubmitsReturnKeyAfterNormalizing() {
     #expect(text == "2001:db8::")
     #expect(submitCount == 1)
 }
+
+@MainActor
+@Test
+func normalizingTextFieldCoordinatorReportsKeyboardFocus() {
+    var text = ""
+    var focused = false
+    let textBinding = Binding(
+        get: { text },
+        set: { text = $0 }
+    )
+    let focusBinding = Binding(
+        get: { focused },
+        set: { focused = $0 }
+    )
+    let textField = NSTextField()
+    let coordinator = NormalizingTextField.Coordinator(
+        text: textBinding,
+        isFocused: focusBinding,
+        onSubmit: {}
+    )
+
+    coordinator.controlTextDidBeginEditing(
+        Notification(name: NSControl.textDidBeginEditingNotification, object: textField)
+    )
+    #expect(focused)
+
+    coordinator.controlTextDidEndEditing(
+        Notification(name: NSControl.textDidEndEditingNotification, object: textField)
+    )
+    #expect(!focused)
+}

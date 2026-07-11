@@ -13,6 +13,6 @@ struct IPWorkspacePickerView: View {
         }
         .pickerStyle(.segmented)
         .controlSize(.large)
-        .tint(theme.accentMode.tint)
+        .tint(theme.visualStyle == .neonTactical ? theme.accentSecondary : theme.accentMode.tint)
     }
 }

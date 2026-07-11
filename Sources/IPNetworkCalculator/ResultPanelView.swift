@@ -25,6 +25,7 @@ struct ResultPanelView: View {
                         ClipboardService.copy(primaryCopyText)
                         flash("已复制：\(primaryCopyLabel)")
                     }
+                    .calculatorSecondaryActionChrome()
                     .controlSize(.small)
                 }
                 if !copyAllText.isEmpty {
@@ -32,6 +33,7 @@ struct ResultPanelView: View {
                         ClipboardService.copy(copyAllText)
                         flash("已复制：全部结果")
                     }
+                    .calculatorSecondaryActionChrome()
                     .controlSize(.small)
                 }
             }
@@ -97,21 +99,25 @@ private struct ResultSectionContainer<Content: View>: View {
         let chrome = theme.resultSection
 
         VStack(alignment: .leading, spacing: chrome.headerSpacing) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(theme.primaryLabel)
+            HStack(spacing: 7) {
+                if theme.visualStyle == .neonTactical {
+                    Text("02 // DATA_BLOCK")
+                        .foregroundStyle(theme.accentSecondary)
+                        .accessibilityHidden(true)
+                }
+                Text(title)
+                    .foregroundStyle(theme.primaryLabel)
+            }
+            .font(
+                theme.visualStyle == .neonTactical
+                    ? .system(.subheadline, design: .monospaced).weight(.bold)
+                    : .subheadline.weight(.semibold)
+            )
 
             content
         }
         .padding(.horizontal, chrome.horizontalPadding)
         .padding(.vertical, chrome.verticalPadding)
-        .background(
-            theme.chromeElevated.opacity(chrome.fillOpacity),
-            in: RoundedRectangle(cornerRadius: chrome.cornerRadius, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: chrome.cornerRadius, style: .continuous)
-                .stroke(theme.stroke.opacity(chrome.strokeOpacity), lineWidth: 1)
-        }
+        .calculatorResultSectionSurface()
     }
 }
