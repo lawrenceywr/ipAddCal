@@ -107,15 +107,9 @@ struct BinaryBitGridView: View {
                                             Text(String(cell.character))
                                                 .font(.system(size: 12, weight: .semibold, design: .monospaced))
                                                 .frame(width: 22, height: 22)
-                                                .foregroundStyle(cell.character == "1" ? Color.white.opacity(0.96) : theme.secondaryLabel)
-                                                .background(
-                                                    cellBackground(for: cell),
-                                                    in: RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                                )
-                                                .overlay {
-                                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                                        .stroke(borderColor(for: cell), lineWidth: 1)
-                                                }
+                                                .foregroundStyle(cellForeground(for: cell))
+                                                .background { cellShape(for: cell) }
+                                                .overlay { cellBorder(for: cell) }
                                         }
                                         .buttonStyle(.plain)
                                         .controlSize(.small)
@@ -152,7 +146,7 @@ struct BinaryBitGridView: View {
 
     private func cellBackground(for cell: BinaryBitGridLayout.Cell) -> Color {
         if cell.character == "1" {
-            return theme.accentMode.tint.opacity(0.42)
+            return theme.accentMode.tint.opacity(theme.visualStyle == .neonTactical ? 0.72 : 0.42)
         }
 
         return theme.chromeElevated.opacity(0.9)
@@ -164,5 +158,39 @@ struct BinaryBitGridView: View {
         }
 
         return theme.stroke.opacity(0.10)
+    }
+
+    private func cellForeground(for cell: BinaryBitGridLayout.Cell) -> Color {
+        if cell.character == "1" {
+            return theme.visualStyle == .neonTactical ? theme.windowBase : Color.white.opacity(0.96)
+        }
+
+        return theme.secondaryLabel
+    }
+
+    @ViewBuilder
+    private func cellShape(for cell: BinaryBitGridLayout.Cell) -> some View {
+        if theme.visualStyle == .neonTactical {
+            ChamferedRectangle(cut: 4)
+                .fill(cellBackground(for: cell))
+        } else {
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .fill(cellBackground(for: cell))
+        }
+    }
+
+    @ViewBuilder
+    private func cellBorder(for cell: BinaryBitGridLayout.Cell) -> some View {
+        if theme.visualStyle == .neonTactical {
+            ChamferedRectangle(cut: 4)
+                .stroke(borderColor(for: cell), lineWidth: 1)
+                .shadow(
+                    color: theme.accentMode.tint.opacity(cell.character == "1" ? theme.glowOpacity : 0),
+                    radius: 4
+                )
+        } else {
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .stroke(borderColor(for: cell), lineWidth: 1)
+        }
     }
 }

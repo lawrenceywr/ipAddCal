@@ -1,9 +1,22 @@
 import SwiftUI
 
+enum ThemeVisualStyle: Equatable {
+    case neonTactical
+    case classicGlass
+}
+
 enum ThemeAccentMode: Equatable {
+    case cyberGreen
     case calculatorOrange
 
-    var tint: Color { Color(red: 1.0, green: 0.584, blue: 0.0) }
+    var tint: Color {
+        switch self {
+        case .cyberGreen:
+            Color(red: 0.0, green: 1.0, blue: 0.533)
+        case .calculatorOrange:
+            Color(red: 1.0, green: 0.584, blue: 0.0)
+        }
+    }
 }
 
 enum ThemeGlassIntensity: Equatable {
@@ -55,7 +68,13 @@ struct CalculatorSectionChrome: Equatable {
 
 struct CalculatorTheme: Equatable {
     let enforcesDarkAppearance: Bool
+    let visualStyle: ThemeVisualStyle
     let accentMode: ThemeAccentMode
+    let accentSecondary: Color
+    let accentTertiary: Color
+    let gridOpacity: Double
+    let scanlineOpacity: Double
+    let glowOpacity: Double
     let glassIntensity: ThemeGlassIntensity
     let surfaceContrast: ThemeSurfaceContrast
     let windowBase: Color
@@ -75,20 +94,26 @@ struct CalculatorTheme: Equatable {
 
     static let defaultDark = CalculatorTheme(
         enforcesDarkAppearance: true,
-        accentMode: .calculatorOrange,
+        visualStyle: .neonTactical,
+        accentMode: .cyberGreen,
+        accentSecondary: Color(red: 0.0, green: 0.831, blue: 1.0),
+        accentTertiary: Color(red: 1.0, green: 0.0, blue: 1.0),
+        gridOpacity: 0.055,
+        scanlineOpacity: 0.16,
+        glowOpacity: 0.42,
         glassIntensity: .elevated,
         surfaceContrast: .clearBoundaries,
-        windowBase: Color(red: 0.115, green: 0.121, blue: 0.139),
-        chromeBase: Color(red: 0.148, green: 0.156, blue: 0.178),
-        chromeElevated: Color(red: 0.178, green: 0.186, blue: 0.212),
-        contentBase: Color(red: 0.205, green: 0.214, blue: 0.244),
-        primaryLabel: Color.white.opacity(0.94),
-        secondaryLabel: Color.white.opacity(0.64),
-        divider: Color.white.opacity(0.10),
-        stroke: Color.white,
-        highlight: Color.white,
+        windowBase: Color(red: 0.039, green: 0.039, blue: 0.059),
+        chromeBase: Color(red: 0.031, green: 0.055, blue: 0.051),
+        chromeElevated: Color(red: 0.071, green: 0.071, blue: 0.102),
+        contentBase: Color(red: 0.055, green: 0.067, blue: 0.086),
+        primaryLabel: Color(red: 0.878, green: 0.929, blue: 0.910),
+        secondaryLabel: Color(red: 0.420, green: 0.510, blue: 0.478),
+        divider: Color(red: 0.0, green: 1.0, blue: 0.533).opacity(0.14),
+        stroke: Color(red: 0.0, green: 1.0, blue: 0.533),
+        highlight: Color(red: 0.0, green: 0.831, blue: 1.0),
         shadow: Color.black,
-        error: Color(red: 0.93, green: 0.42, blue: 0.42),
+        error: Color(red: 1.0, green: 0.20, blue: 0.40),
         workspaceSurface: CalculatorSurfaceStyle(
             cornerRadius: 20,
             fillOpacity: 0.78,
@@ -114,7 +139,13 @@ struct CalculatorTheme: Equatable {
 
     static let defaultLight = CalculatorTheme(
         enforcesDarkAppearance: false,
+        visualStyle: .classicGlass,
         accentMode: .calculatorOrange,
+        accentSecondary: Color(red: 0.0, green: 0.478, blue: 0.690),
+        accentTertiary: Color(red: 0.690, green: 0.160, blue: 0.510),
+        gridOpacity: 0,
+        scanlineOpacity: 0,
+        glowOpacity: 0,
         glassIntensity: .elevated,
         surfaceContrast: .clearBoundaries,
         windowBase: Color(red: 0.900, green: 0.910, blue: 0.930),

@@ -14,6 +14,12 @@ struct BaseConversionView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: WorkspaceChrome.sectionSpacing) {
+            CalculatorWorkspaceHeader(
+                route: "WORKSPACE / BASE_CONVERSION",
+                title: "BASE TRANSCODER",
+                subtitle: "同步转换 2 / 10 / 16 进制数值"
+            )
+
             HStack(alignment: .top, spacing: WorkspaceChrome.controlSpacing) {
                 baseField("二进制", text: viewModel.binaryText, base: .binary)
                 baseField("十进制", text: viewModel.decimalText, base: .decimal)
@@ -43,7 +49,19 @@ struct BaseConversionView: View {
 
     private func baseField(_ title: String, text: String, base: NumberBase) -> some View {
         VStack(alignment: .leading, spacing: WorkspaceChrome.fieldLabelSpacing) {
-            Text(title).font(.subheadline.weight(.semibold))
+            if theme.visualStyle == .neonTactical {
+                HStack(spacing: 7) {
+                    Text("01 //")
+                        .foregroundStyle(theme.accentSecondary)
+                        .accessibilityHidden(true)
+                    Text(title)
+                        .foregroundStyle(theme.primaryLabel)
+                }
+                .font(.system(.subheadline, design: .monospaced).weight(.bold))
+                .tracking(0.6)
+            } else {
+                Text(title).font(.subheadline.weight(.semibold))
+            }
             TextField(title, text: Binding(
                 get: { text },
                 set: { newValue in viewModel.update(text: newValue, base: base) }

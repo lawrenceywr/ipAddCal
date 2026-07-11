@@ -11,9 +11,22 @@ struct HistoryPopoverView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("历史记录")
-                .font(.headline)
-                .foregroundStyle(theme.primaryLabel)
+            VStack(alignment: .leading, spacing: 4) {
+                if theme.visualStyle == .neonTactical {
+                    Text("> ARCHIVE / LOCAL_HISTORY")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .tracking(1.1)
+                        .foregroundStyle(theme.accentSecondary)
+                        .accessibilityHidden(true)
+                }
+                Text("历史记录")
+                    .font(
+                        theme.visualStyle == .neonTactical
+                            ? .system(.headline, design: .monospaced).weight(.bold)
+                            : .headline
+                    )
+                    .foregroundStyle(theme.primaryLabel)
+            }
 
             if entries.isEmpty {
                 Text("暂无历史记录")
@@ -37,10 +50,12 @@ struct HistoryPopoverView: View {
                                     Button(copiedEntryID == entry.id ? "已复制" : "复制") {
                                         copy(entry)
                                     }
+                                    .calculatorSecondaryActionChrome()
 
                                     Button("恢复") {
                                         onRestore(entry)
                                     }
+                                    .calculatorSecondaryActionChrome()
                                     .disabled(entry.restoreTarget == nil)
                                 }
                                 .controlSize(.small)

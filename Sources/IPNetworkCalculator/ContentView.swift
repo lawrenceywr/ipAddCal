@@ -31,9 +31,11 @@ struct ContentView: View {
                 .padding(WorkspaceChrome.contentPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .background(theme.windowBase.gradient)
+            .background {
+                CalculatorWorkspaceBackground()
+            }
         }
-        .background(theme.windowBase.gradient)
+        .background(theme.windowBase)
         .toolbar {
             ToolbarItem {
                 Button {
