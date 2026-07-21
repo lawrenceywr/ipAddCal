@@ -22,7 +22,7 @@ struct NetworkWorkspaceView: View {
                 HStack {
                     Spacer()
                     Button("计算") {
-                        onCalculate()
+                        submitAfterCommittingTextEditing(onCalculate)
                     }
                     .keyboardShortcut(.return)
                     .calculatorPrimaryActionChrome()

@@ -25,9 +25,9 @@ func normalizingTextFieldCoordinatorRewritesAppKitTextFieldValue() {
 
 @MainActor
 @Test
-func normalizingTextFieldCoordinatorSubmitsReturnKeyAfterNormalizing() {
-    var text = ""
-    var submitCount = 0
+func normalizingTextFieldCoordinatorSubmitsLiveFieldEditorValue() {
+    var text = "48.235.24.0/30"
+    var submittedText: String?
     let binding = Binding(
         get: { text },
         set: { text = $0 }
@@ -35,20 +35,23 @@ func normalizingTextFieldCoordinatorSubmitsReturnKeyAfterNormalizing() {
     let textField = NSTextField()
     let coordinator = NormalizingTextField.Coordinator(
         text: binding,
-        onSubmit: { submitCount += 1 }
+        onSubmit: { submittedText = text }
     )
 
-    textField.stringValue = "２００１：ｄｂ８：："
+    textField.stringValue = text
+    let fieldEditor = NSTextView()
+    fieldEditor.string = "４８。２３５。２５。０、３０"
     let handled = coordinator.control(
         textField,
-        textView: NSTextView(),
+        textView: fieldEditor,
         doCommandBy: #selector(NSResponder.insertNewline(_:))
     )
 
     #expect(handled)
-    #expect(textField.stringValue == "2001:db8::")
-    #expect(text == "2001:db8::")
-    #expect(submitCount == 1)
+    #expect(textField.stringValue == "48.235.25.0/30")
+    #expect(fieldEditor.string == "48.235.25.0/30")
+    #expect(text == "48.235.25.0/30")
+    #expect(submittedText == "48.235.25.0/30")
 }
 
 @MainActor

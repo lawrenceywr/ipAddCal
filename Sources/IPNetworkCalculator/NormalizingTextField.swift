@@ -2,6 +2,12 @@ import AppKit
 import SwiftUI
 import IPCalculatorCore
 
+@MainActor
+func submitAfterCommittingTextEditing(_ action: () -> Void) {
+    NSApp.keyWindow?.endEditing(for: nil)
+    action()
+}
+
 struct NormalizingTextField: NSViewRepresentable {
     let title: String
     @Binding var text: String
@@ -72,7 +78,11 @@ struct NormalizingTextField: NSViewRepresentable {
         }
 
         func controlTextDidChange(_ notification: Notification) {
-            normalize(notification.object as? NSTextField)
+            guard let textField = notification.object as? NSTextField else {
+                return
+            }
+
+            normalize(textField, editor: textField.currentEditor())
         }
 
         func controlTextDidEndEditing(_ notification: Notification) {
@@ -89,25 +99,25 @@ struct NormalizingTextField: NSViewRepresentable {
                 return false
             }
 
-            normalize(control as? NSTextField)
+            normalize(control as? NSTextField, editor: textView)
             onSubmit()
             return true
         }
 
-        private func normalize(_ textField: NSTextField?) {
+        private func normalize(_ textField: NSTextField?, editor: NSText? = nil) {
             guard let textField else {
                 return
             }
 
-            let rawText = textField.stringValue
+            let rawText = editor?.string ?? textField.stringValue
             let normalizedText = InputNormalizer.normalizeFieldText(rawText)
 
             if rawText != normalizedText {
-                let editor = textField.currentEditor()
                 let selectedRange = editor?.selectedRange ?? NSRange(location: rawText.utf16.count, length: 0)
                 textField.stringValue = normalizedText
 
                 if let editor {
+                    editor.string = normalizedText
                     let adjustedLocation = selectedRange.location + normalizedText.utf16.count - rawText.utf16.count
                     editor.selectedRange = NSRange(
                         location: min(max(0, adjustedLocation), normalizedText.utf16.count),
